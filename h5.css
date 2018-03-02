@@ -1,0 +1,110 @@
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+html {
+	-webkit-tap-highlight-color: transparent;
+	-ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+	height: 100%; 
+}
+::-webkit-input-placeholder {
+    font-family: -apple-system-font,Helvetica Neue,sans-serif;
+}
+body {
+	margin: 0;
+	height: 100%;
+	line-height: 1.25;
+	overflow-x: hidden;
+	font-family: -apple-system-font,Helvetica Neue,sans-serif;
+	color: #5e6d82;
+    /* color: #333; */
+    /* color: #8f9ea6; */
+    /* background: #F1F2F6; */
+    /* background: #f4f4f4; */
+}
+body iframe {
+	display:none;
+}
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+audio, canvas, video {
+    display: inline-block;
+}
+/*
+	列表
+*/
+ol, ul {
+	list-style: none;
+}
+/*
+	链接
+*/
+a {
+	text-decoration: none;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+}
+a:link {
+    /* color: #333; */
+    /* color: #8f9ea6; */
+}
+/*
+	图片
+*/
+img {
+	border: 0;
+    vertical-align: middle;
+    max-width: 100%;
+}
+/*
+	表格
+*/
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+td {
+	word-wrap: break-word;
+  	word-break: break-all;
+}
+/*
+	form表单
+*/
+input, textarea {
+	-webkit-appearance: none;
+	border-radius: 0;
+	border: none;
+}
+input, select, textarea, button {
+    outline: none;
+    font-size: 100%;
+    margin: 0;
+    font-family: inherit;
+}
+textarea {
+	resize: none;
+	width: 100%;
+	display: block;
+}
+input:focus, textarea:focus {
+	outline: none;
+}
+/*
+	段落文字
+*/
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+}
+p {
+	word-wrap: break-word;
+    word-break: break-all;
+}
+strong, b {
+    font-weight: bold;
+}
+em, i {
+	font-style: normal;
+}
