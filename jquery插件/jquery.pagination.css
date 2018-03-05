@@ -1,0 +1,19 @@
+.paginationBox {
+	margin-top: 30px;
+}
+.paginationBox a, .paginationBox .active {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	margin: 0 8px;
+	background: #F2F4F7;
+	text-align: center;
+	line-height: 30px;
+    font-family: 宋体;
+    font-weight: bold;
+}
+.paginationBox .active {
+	background: #053E71;
+	color: #fff;
+}
