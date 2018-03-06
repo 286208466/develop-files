@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1' />
+<meta name="renderer" content="webkit">
+<title>官网管理</title>
+<link rel="shortcut icon" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="bookmark" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/gray/easyui.css" id="theme"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/color.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/icon.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/layer.css"/>
+<style>
+#window form {
+	padding: 10px;
+}
+</style>
+</head>
+<body class="easyui-layout">
+
+	<div data-options="region:'west'" border="false" style="width: 200px;padding: 10px 0 10px 10px">
+   	    <div class="easyui-panel" title="" fit="true" style="padding: 10px 0">
+			<ul class="easyui-tree" id="tree">
+	            <li>
+	                <span>新手入门</span>
+	                <ul>
+	                    <li>
+	                        <span>接入指南</span>
+	                    </li>
+	                </ul>
+	            </li>
+	            <li>
+	                <span>常见问题</span>
+	                <ul>
+	                    <li>
+	                        <span>使用升级</span>
+	                    </li>
+	                </ul>
+	            </li>
+	        </ul>
+		</div>
+    </div>
+	
+	<div data-options="region:'center'" border="false" style="padding:10px">
+		<div class="easyui-panel" title="" fit="true">
+			<table id="datagrid" fit="true" border="false"></table>
+		</div>
+	</div>	
+
+	<div id="toolbar" class="toolbar clearfix">
+		<label>状态：</label>
+		<select class="easyui-combobox" name="state"style="width:150px;">
+        	<option value="">全部</option>
+            <option value="">启用</option>
+            <option value="">禁用</option>
+        </select>
+        <input type="text" class="easyui-textbox" prompt="标题">
+        <a id="searchBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
+        <a class="easyui-linkbutton fr" iconCls="icon-add" onclick="toAdd()">添加</a>
+    </div>
+    
+    <div class="easyui-menu" style="width:120px;">
+		<div onclick="showAddWindow()" data-options="iconCls:'icon-add'">添加节点</div>
+		<div onclick="showEditWindow()" data-options="iconCls:'icon-edit'">修改节点</div>
+		<div onclick="removeNode()" data-options="iconCls:'icon-remove'">删除节点</div>
+	</div>
+
+	<!-- 添加弹出框 -->
+	<div id="window" class="easyui-dialog" closed="true" buttons="#window-buttons" title="添加" data-options="modal:true">
+		<form>
+			<table class="ui-table">
+				<tr>
+					<td>接点名称：</td>
+					<td><input type="text" name="name" class="w300 easyui-textbox"></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="window-buttons">
+		<a class="easyui-linkbutton c6" onclick="addNode()">保存</a>
+		<a class="easyui-linkbutton" onclick="javascript:$('#window').dialog('close')">取消</a>
+	</div>
+	    
+<script src="../../src/js/jquery-1.12.4.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/jquery.easyui.min.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/locale/easyui-lang-zh_CN.js"></script>
+<script src="../../src/js/doT.js"></script>
+<script src="../../src/js/utils.js"></script>
+<script>
+
+$(function(){
+	
+	$("#tree").tree({	
+		lines:true,
+		onContextMenu: function(e, node){
+			e.preventDefault();
+			console.log(node);
+			$("#tree").tree("select", node.target);
+			$(".easyui-menu").menu("show", {
+				left: e.pageX,
+				top: e.pageY
+			});
+		}
+	});
+	
+	render();
+	
+	//搜索
+	$("#searchBtn").on("click", function(){
+		var data={};
+	    var title = $.trim($("#title").val());
+	    data["title"] = title;
+	    $('#datagrid').datagrid("load", data);
+	});
+	
+})
+
+//获取列表
+function render(){
+	utils.datagrid({
+		url: "test/service/role.json",
+		columns: [[
+			{field: "isCkecked", checkbox: true},
+			{field: "id", title: "操作", width: "10%", align: "center", formatter: function(value,row,index){
+				return '<a data-id="' + value + '" onclick="toEdit(this)">编辑</a>'+
+						'&emsp;<a data-id="' + value + '" onclick="delRow(this)">删除</a>';
+			}},
+        	{field: "name", title: "问题序号", width: "10%", align: "center"},
+        	{field: "url", title: "问题标题", width: "10%", align: "center"},
+        	{field: "url", title: "创建时间", width: "10%", align: "center"},
+        	{field: "url", title: "状态", width: "10%", align: "center", formatter: function(value, row, index){
+        		var text = "启用"
+         		return text;
+         	}}
+        ]],
+        toolbar:"#toolbar",
+        buttons: [
+        	
+        ]
+	});
+}
+
+//添加
+function toAdd(){
+	window.parent.addTab({
+		tabid: "iframe_helpGuideAdd",
+		title: "添加新手引导",
+		url: "view/home/helpGuideAdd"
+	});
+}
+
+//编辑
+function toEdit(self){
+	var id = $(self).attr("data-id");
+	window.parent.addTab({
+		tabid: "iframe_helpGuideEdit",
+		title: "编辑新手引导",
+		url: "view/home/helpGuideAdd?id=" + id
+	});
+	
+}
+
+//删除
+function delRow(self){
+	$.messager.confirm("警告", "是否确定删除该数据?", function(r){
+        var id = $(self).attr("data-id");
+        if(r){
+            utils.ajax({
+                url: "/admin/article/info/del",
+                data: {
+                    id: id
+                },
+                type: "get",
+                success: function(data){
+                    $("#datagrid").datagrid("reload");
+                }
+            });
+        }
+    });
+}
+
+function showAddWindow(){
+	$("#window").window({
+	    title: "添加"
+	});
+	$("#window .id").val("");
+	$("#addBtn").removeClass("hide");
+	$("#editBtn").addClass("hide");
+	$("#window form").form("clear");
+	$("#window").dialog("open");
+	$("#window").window("center");
+}
+
+//编辑弹出框
+function showEditWindow(){
+	var id = $(self).attr("data-id");
+	utils.ajax({
+        url: "/admin/article/info/del",
+        data: {
+            id: id
+        },
+        type: "get",
+        success: function(data){
+        	$("#window").window({
+        	    title: "编辑"
+        	});
+        	$("#window .id").val("123456");
+        	$("#addBtn").addClass("hide");
+        	$("#editBtn").removeClass("hide");
+        	$("#window form").form("clear");
+        	$("#window").dialog("open");
+        	$("#window").window("center");
+        }
+    });
+	
+}
+
+//删除
+function delRow(self){
+	$.messager.confirm("警告", "是否确定删除该数据?", function(r){
+        var id = $(self).attr("data-id");
+        if(r){
+            utils.ajax({
+                url: "/admin/article/info/del",
+                data: {
+                    id: id
+                },
+                type: "get",
+                success: function(data){
+                    
+                }
+            });
+        }
+    });
+}
+</script>
+
+</body>
+</html>

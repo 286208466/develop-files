@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1' />
+<meta name="renderer" content="webkit">
+<title>官网管理</title>
+<link rel="shortcut icon" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="bookmark" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/gray/easyui.css" id="theme"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/color.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/icon.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/layer.css"/>
+<style>
+#window form {
+	padding: 10px;
+}
+.preWrap>div {
+	width: 175px;
+	height: 80px;
+}
+.preWrap>div {
+	width: 260px;
+	height: 188px;
+}
+</style>
+</head>
+<body class="easyui-layout">
+	
+	<div data-options="region:'center'" fit="true" border="false" style="padding:10px">
+		
+		<div class="easyui-panel" fit="true" style="padding:10px">
+		
+			<form id="ff" method="post">
+				<input type="hidden" name="id" class="id">
+				<table class="ui-table">
+					<tr>
+						<td width="100">标题：</td>
+						<td>
+							<input type="text" name="username" class="w300 easyui-textbox">
+						</td>
+					</tr>
+					<tr>
+						<td width="100">缩略图：</td>
+						<td>
+							<p>请选择240*168的JPEG或PNG图片</p>
+							<div class="clearfix">
+								<div class="preWrap">
+		                        	<div>
+		                        		<img src="">
+		                        		<input type="file" name="img1" onchange="utils.preview(this)">
+		                        	</div>
+		                        	<a class="chooseBtn">选择<a>&ensp;
+		                        	<a class="clearBtn">清除</a>
+		                         </div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>更新日期：</td>
+						<td>
+							<input type="text" name="username" class="w300 easyui-datetimebox">
+						</td>
+					</tr>
+					<tr>
+						<td>关键词：</td>
+						<td>
+							<input type="text" name="username" class="w300 easyui-textbox">
+						</td>
+					</tr>
+					<tr>
+						<td>状态：</td>
+						<td>
+							<label><input type="radio" name="status">启用</label>
+							
+							<label><input type="radio" name="status">禁用</label>
+						</td>
+					</tr>
+					<tr>
+						<td>简介：</td>
+						<td>
+							<input type="text" name="" class="w300 easyui-textbox" multiline="true" style="height: 80px">
+						</td>
+					</tr>
+					<tr>
+						<td>文章详情：</td>
+						<td>
+							
+						</td>
+					</tr>
+				</table>
+				<br>
+			
+				<div>
+					<a class="easyui-linkbutton btn-line-blue" id="saveBtn">保存</a>
+					<a class="easyui-linkbutton btn-line-gray" id="closeBtn">关闭</a>
+				</div>
+				
+			</form>	
+		</div>
+		
+	</div>	
+
+<script src="../../src/js/jquery-1.12.4.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/jquery.easyui.min.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/locale/easyui-lang-zh_CN.js"></script>
+<script src="../../src/js/doT.js"></script>
+<script src="../../src/js/utils.js"></script>
+<script>
+
+var id = utils.getUrlParam("id");
+if(!!id){
+	//赋值
+	utils.ajax({
+		url: "",
+		success: function(data){
+			
+		}
+	})
+}
+
+$(function(){
+	
+	$("#ff").form({    
+	    url: "",    
+	    onSubmit: function(){    
+	        // do some check    
+	        // return false to prevent submit;    
+	    },    
+	    success: function(data){    
+	        alert(data)    
+	    }    
+	}); 
+	
+	$("#saveBtn").on("click", function(){
+		$("#ff").submit(); 
+	});
+	
+})
+
+
+
+</script>
+
+</body>
+</html>

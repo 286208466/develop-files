@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1' />
+<meta name="renderer" content="webkit">
+<title>官网管理</title>
+<link rel="shortcut icon" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="bookmark" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/gray/easyui.css" id="theme"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/color.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/icon.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/layer.css"/>
+<style>
+#window form {
+	padding: 10px;
+}
+.preWrap>div {
+	width: 195px;
+	height: 100px;
+}
+</style>
+</head>
+<body class="easyui-layout">
+	
+	<div data-options="region:'center'" fit="true" border="false" style="padding:10px">
+		<div class="easyui-panel" title="" fit="true">
+			<table id="datagrid" fit="true" border="false"></table>
+		</div>
+	</div>	
+
+	<div id="toolbar" class="toolbar clearfix">
+        
+    </div>
+	    
+	<!-- 弹出框 -->
+	<div id="window" class="easyui-dialog" closed="true" buttons="#window-buttons" title="编辑" data-options="modal:true">
+		<form id="ff" method="post">
+			<input type="hidden" name="id" class="id">
+			<table class="ui-table">
+				<tr>
+					<td>广告图位置：</td>
+					<td>
+						<select class="easyui-combobox" name="state" style="width:300px;">
+			                <option value="资讯页广告图1">资讯页广告图1</option>
+			                <option value="媒体报道广告图3">媒体报道广告图3</option>
+			                <option value="行业资讯广告图4">行业资讯广告图4</option>
+			            </select>
+					</td>
+				</tr>
+				<tr>
+					<td>图片标题：</td>
+					<td>
+						<input type="text" name="username" class="w300 easyui-textbox">
+					</td>
+				</tr>
+				<tr>
+					<td>广告图：</td>
+					<td>
+						<p>请选择350*160的JPEG或PNG图片</p>
+						<div class="clearfix">
+							<div class="preWrap">
+	                        	<div>
+	                        		<img src="">
+	                        		<input type="file" name="img1" onchange="utils.preview(this)">
+	                        	</div>
+	                        	<a class="chooseBtn">选择<a>&ensp;
+	                        	<a class="clearBtn">清除</a>
+	                         </div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>跳转方式：</td>
+					<td>
+						<label><input type="radio" name="style">无跳转</label>
+						
+						<label><input type="radio" name="style">新窗口跳转</label>
+					</td>
+				</tr>
+				<tr>
+					<td>跳转地址：</td>
+					<td>
+						<input type="text" name="username" disabled class="w300 easyui-textbox">
+					</td>
+				</tr>
+				<tr>
+					<td>状态：</td>
+					<td>
+						<label><input type="radio" name="status">启用</label>
+						
+						<label><input type="radio" name="status">禁用</label>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="window-buttons">
+		<a id="editBtn" class="easyui-linkbutton c6">保存</a>
+		<a class="easyui-linkbutton" onclick="javascript:$('#window').dialog('close')">取消</a>
+	</div>
+    
+<script src="../../src/js/jquery-1.12.4.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/jquery.easyui.min.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/locale/easyui-lang-zh_CN.js"></script>
+<script src="../../src/js/doT.js"></script>
+<script src="../../src/js/utils.js"></script>
+<script>
+
+$(function(){
+	
+	render();
+	
+	$("#ff").form({    
+	    url: "",    
+	    onSubmit: function(){    
+	        // do some check    
+	        // return false to prevent submit;    
+	    },    
+	    success: function(data){    
+	        alert(data)    
+	    }    
+	}); 
+	
+	//编辑
+	$("#editBtn").on("click", function(){
+		$("#ff").submit(); 
+	});
+	
+})
+
+//获取列表
+function render(){
+	utils.datagrid({
+		url: "test/service/role.json",
+		columns: [[
+			{field: "isCkecked", checkbox: true},
+			{field: "id", title: "操作", width: "10%", align: "center", formatter: function(value, row, index){
+				return '<a data-id="' + value + '" onclick="showEditWindow(this)">编辑</a>';
+			}},
+        	{field: "title", title: "图片",width: "10%", align: "center", formatter: function(value, row, index){
+				return '<img src="" width="192">';
+			}},
+        	{field: "type", title: "标题", width: "10%", align: "center"},
+        	{field: "type", title: "链接地址", width: "10%", align: "center"},
+        	{field: "type", title: "所属位置", width: "10%", align: "center"},
+        	{field: "url", title: "是否启用", width: "10%", align: "center", formatter: function(value, row, index){
+        		var text = "启用"
+       			return text;
+       		}}
+        ]],
+        toolbar: null,
+        buttons: [
+        	
+        ]
+	});
+}
+
+//编辑弹出框
+function showEditWindow(self){
+	var id = $(self).attr("data-id");
+	utils.ajax({
+        url: "/admin/article/info/del",
+        data: {
+            id: id
+        },
+        type: "get",
+        success: function(data){
+        	$("#window .id").val("123456");
+        	$("#window form").form("clear");
+        	$("#window").dialog("open");
+        	$("#window").window("center");
+        }
+    });
+	
+}
+
+</script>
+
+</body>
+</html>

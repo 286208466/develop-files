@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1' />
+<meta name="renderer" content="webkit">
+<title>官网管理</title>
+<link rel="shortcut icon" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="bookmark" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/gray/easyui.css" id="theme"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/color.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/icon.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/layer.css"/>
+<style>
+#window form {
+	padding: 10px;
+}
+</style>
+</head>
+<body class="easyui-layout">
+	
+	<div data-options="region:'center'" fit="true" border="false" style="padding:10px">
+		<div class="easyui-panel" title="" fit="true">
+			<table id="datagrid" fit="true" border="false"></table>
+		</div>
+	</div>	
+
+	<div id="toolbar" class="toolbar clearfix">
+		<input type="text" class="easyui-textbox" prompt="标签">
+        <a id="searchBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
+        <a class="easyui-linkbutton fr" iconCls="icon-add" onclick="showAddWindow()">添加</a>
+    </div>
+	    
+	<!-- 弹出框 -->
+	<div id="window" class="easyui-dialog" closed="true" buttons="#window-buttons" title="添加" data-options="modal:true">
+		<form id="ff" method="post">
+			<input type="hidden" name="id" class="id">
+			<table class="ui-table">
+				<tr>
+					<td>标签名称：</td>
+					<td>
+						<input type="text" name="username" class="w300 easyui-textbox">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="window-buttons">
+		<a id="addBtn" class="easyui-linkbutton c6">保存</a>
+		<a id="editBtn" class="easyui-linkbutton c6 hide">保存</a>
+		<a class="easyui-linkbutton" onclick="javascript:$('#window').dialog('close')">取消</a>
+	</div>
+    
+<script src="../../src/js/jquery-1.12.4.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/jquery.easyui.min.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/locale/easyui-lang-zh_CN.js"></script>
+<script src="../../src/js/doT.js"></script>
+<script src="../../src/js/utils.js"></script>
+<script>
+
+$(function(){
+	
+	render();
+	
+	//搜索
+	$("#searchBtn").on("click", function(){
+		var data={};
+	    var title = $.trim($("#title").val());
+	    data["title"] = title;
+	    $('#datagrid').datagrid("load", data);
+	});
+	
+	$("#ff").form({    
+	    url: "",    
+	    onSubmit: function(){    
+	        // do some check    
+	        // return false to prevent submit;    
+	    },    
+	    success: function(data){    
+	        alert(data)    
+	    }    
+	}); 
+	
+	//添加
+	$("#addBtn").on("click", function(){
+		$("#ff").submit(); 
+	});
+	
+	//编辑
+	$("#editBtn").on("click", function(){
+		$("#ff").submit(); 
+	});
+	
+})
+
+//获取列表
+function render(){
+	utils.datagrid({
+		url: "test/service/role.json",
+		columns: [[
+			{field: "isCkecked", checkbox: true},
+			{field: "id", title: "操作", width: "10%", align: "center", formatter: function(value,row,index){
+				return '<a data-id="' + value + '" onclick="showEditWindow(this)">编辑</a>'+
+						'&emsp;<a data-id="' + value + '" onclick="delRow(this)">删除</a>';
+			}},
+        	{field: "name", title: "标签名称", width: "10%", align: "center"},
+        	{field: "url", title: "被点击次数", width: "10%", align: "center"},
+        	{field: "order", title: "文章使用次数", width: "10%", align:"center"}
+        ]],
+        toolbar:"#toolbar",
+        buttons: [
+        	
+        ]
+	});
+}
+
+//添加弹出框
+function showAddWindow(){
+	$("#window").window({
+	    title: "添加"
+	});
+	$("#window .id").val("");
+	$("#addBtn").removeClass("hide");
+	$("#editBtn").addClass("hide");
+	$("#window form").form("clear");
+	$("#window").dialog("open");
+	$("#window").window("center");
+}
+
+//编辑弹出框
+function showEditWindow(self){
+	var id = $(self).attr("data-id");
+	utils.ajax({
+        url: "/admin/article/info/del",
+        data: {
+            id: id
+        },
+        type: "get",
+        success: function(data){
+        	$("#window").window({
+        	    title: "编辑"
+        	});
+        	$("#window .id").val("123456");
+        	$("#addBtn").addClass("hide");
+        	$("#editBtn").removeClass("hide");
+        	$("#window form").form("clear");
+        	$("#window").dialog("open");
+        	$("#window").window("center");
+        }
+    });
+	
+}
+
+//删除
+function delRow(self){
+	$.messager.confirm("警告", "是否确定删除该数据?", function(r){
+        var id = $(self).attr("data-id");
+        if(r){
+            utils.ajax({
+                url: "/admin/article/info/del",
+                data: {
+                    id: id
+                },
+                type: "get",
+                success: function(data){
+                    $("#datagrid").datagrid("reload");
+                }
+            });
+        }
+    });
+}
+</script>
+
+</body>
+</html>

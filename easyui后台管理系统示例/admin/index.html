@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1' />
+<meta name="renderer" content="webkit">
+<title>首页</title>
+<link rel="shortcut icon" type="image/x-icon" href="src/img/favicon.ico"/>
+<link rel="bookmark" type="image/x-icon" href="src/img/favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="src/js/jquery-easyui-1.5.4/themes/gray/easyui.css" id="theme"/>
+<link rel="stylesheet" type="text/css" href="src/js/jquery-easyui-1.5.4/themes/color.css"/>
+<link rel="stylesheet" type="text/css" href="src/js/jquery-easyui-1.5.4/themes/icon.css"/>
+<link rel="stylesheet" type="text/css" href="src/css/common.css"/>
+<link rel="stylesheet" type="text/css" href="src/css/layer.css"/>
+<style>
+.north .panel-header,.north .panel-body{
+	border:none;
+	background:none;
+}
+.north .panel{
+	margin-top:12px;
+}
+.south p{
+	line-height:40px;
+	text-align:center;
+}
+#west{
+	width:180px;
+}
+#west .menu {
+	background: #fff;
+}
+#pwdWindow>form {
+	padding: 10px;
+}
+</style>
+</head>
+<body class="easyui-layout">
+	
+	<div data-options="region:'north'" class="north">
+    	<div class="clearfix">
+    		<div class="fl">
+    			<a class="logo">
+    				
+    			</a>
+    		</div>
+    		<div class="fr">
+    			<div class="easyui-panel" style="width:280px">
+			        <a class="easyui-menubutton" data-options="menu:'#topicMenu',iconCls:'icon-help'">切换主题</a>
+			         <a onclick="setting()" class="easyui-linkbutton" data-options="plain:true">设置</a>
+			        <a onclick="refreshTab()" class="easyui-linkbutton" data-options="plain:true">刷新</a>
+			        <a onclick="showChangePwd()" class="easyui-linkbutton" data-options="plain:true">修改密码</a>
+			        <a onclick="exit()" class="easyui-linkbutton" data-options="plain:true">退出</a>
+			    </div>
+			    <div id="topicMenu" style="width:150px;">
+			        <div><a onclick="changeTheme(this)" data-theme="default">default</a></div>
+			        <div><a onclick="changeTheme(this)" data-theme="black">black</a></div>
+			        <div><a onclick="changeTheme(this)" data-theme="bootstrap">bootstrap</a></div>
+			        <div><a onclick="changeTheme(this)" data-theme="metro">metro</a></div>
+			        <div><a onclick="changeTheme(this)" data-theme="gray">gray</a></div>
+			    </div>
+    		</div>
+    	</div>
+    </div>
+    
+    <div data-options="region:'south',split:true" class="south">
+    	<p>&copy; 2018 深圳柒壹思诺</p>
+    </div>
+    
+    <div data-options="region:'west',split:true" title="菜单栏" id="west">
+    	      
+    </div>
+    <div data-options="region:'center'">
+     	<div id="tab" class="easyui-tabs" fit="true" border="false">
+		    <div title="首页" style="height:100%">
+		   		<iframe name="default" id="default" src="view/default" width="100%" height="100%" frameborder="0" scrolling="auto" ></iframe>
+		    </div>
+		</div>
+         <div id="tabMenu" class="easyui-menu" style="width:120px;">
+			<div data-options="name:'closeCurrent'">关闭当前页</div>
+			<div data-options="name:'closeOthers'">关闭其他</div>
+			<div data-options="name:'closeAll'">关闭所有</div>
+			<div data-options="name:'refresh'">刷新</div>
+		</div>
+	</div>
+	
+	<!-- 弹出框 -->
+	<div id="pwdWindow" class="easyui-dialog" closed="true" buttons="#pwdWindow-buttons" title="修改密码" data-options="modal:true">
+		<form>
+			<table class="ui-table">
+				<tr>
+					<td>旧密码：</td>
+					<td>
+						<input type="text" name="username" class="w300 easyui-textbox">
+					</td>
+				</tr>
+				<tr>
+					<td>新密码：</td>
+					<td>
+						<input type="text" name="username" class="w300 easyui-textbox">
+					</td>
+				</tr>
+				<tr>
+					<td>确认新密码：</td>
+					<td>
+						<input type="text" name="username" class="w300 easyui-textbox">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="pwdWindow-buttons">
+		<a class="easyui-linkbutton c6" onclick="changePwd()">保存</a>
+		<a class="easyui-linkbutton" onclick="javascript:$('#pwdWindow').dialog('close')">取消</a>
+	</div>
+	
+<script src="src/js/jquery-1.12.4.js"></script>
+<script src="src/js/jquery-easyui-1.5.4/jquery.easyui.min.js"></script>
+<script src="src/js/jquery-easyui-1.5.4/locale/easyui-lang-zh_CN.js"></script>
+<script src="src/js/doT.js"></script>
+<script src="src/js/utils.js"></script>
+<script>
+$(function(){
+	
+	if(!!utils.getCookie("theme")){
+		$("#theme").attr("href","src/js/jquery-easyui-1.5.4/themes/" + utils.getCookie("theme") + "/easyui.css?v=" + Math.random());
+	}
+	//获取菜单
+	utils.ajax({
+		url: "test/service/getmenu.json",
+		type: "get",
+		success: function(data){
+			var tpl = doT.template(utils.template("src/template/menu.html"))(data.data);
+			$("#west").html(tpl);
+			$("#west .easyui-menu").menu();
+		    $("#west .easyui-accordion").accordion();
+		    
+		}
+	});
+	
+	$("#tab").tabs({
+		onContextMenu:function(e, title,index){
+			e.preventDefault();
+			$('#tabMenu').menu('show', {
+				left: e.pageX,
+				top: e.pageY
+			});
+		    $('#tabMenu').menu({
+		        onClick: function(item){
+		        	if(item.name == "closeCurrent"){
+		        		closeCurrent(e,title,index);
+		        	}else if(item.name == "closeOthers"){
+		        		closeOthers(e,title,index);
+		        	}else if(item.name == "closeAll"){
+		        		closeAll();
+		        	}else if(item.name == "refresh"){
+		        		refresh(e,title,index);
+		        	}
+		        }
+	        });
+		    $(".tabs li:eq(" + index + ")").removeClass("closeable").siblings("li").addClass("closeable");
+		    
+        }
+	});
+	
+	
+});
+
+
+//退出系统
+function exit(){
+	//ajax请求略
+	window.location.href = "login";
+}
+
+//刷新tab
+function refreshTab(){
+	var tab = $('#tab').tabs('getSelected');
+	var name = $(tab).find("iframe").attr("name");
+	window.frames[name].location.reload(true);
+}
+
+//修改密码
+function showChangePwd(){
+	$("#pwdWindow form").form("clear");
+	$('#pwdWindow').dialog('open');
+	$('#pwdWindow').window('center');
+}
+
+function changePwd(){
+	
+}
+
+//设置
+function setting(){
+	addTab({
+		tabid: "iframe_setting",
+		title: "设置",
+		url: "setting.jsp"
+	});
+}
+
+//切换主题
+function changeTheme(self){
+	var theme = $(self).attr("data-theme");
+	utils.setCookie("theme", theme, 7);
+	$("#theme").attr("href", "src/js/jquery-easyui-1.5.4/themes/" + theme + "/easyui.css?v=" + Math.random());
+}
+
+//左侧菜单点击事件
+function menuEvent(self){
+	if($(self).attr("data-url") != "null"){
+		addTab({
+			tabid: $(self).attr("data-tabid"),
+			title: $(self).text(),
+			url: $(self).attr("data-url")
+		});
+	}
+}
+//添加选项卡
+window.tab = $('#tab');
+function addTab(options){
+	var tabid = options.tabid;
+	var title = options.title;
+	var url = options.url;
+    //如果当前id的tab不存在则创建一个tab  
+    if($("#" + tabid).length < 1){
+        var name = 'iframe_'+tabid;  
+        $('#tab').tabs('add',{  
+            title: title,           
+            closable: true,  
+            cache: false,  
+            content: '<iframe name="' + name + '"id="' + tabid + '"src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto" ></iframe>'
+        });  
+    }else{
+    	$('#tab').tabs('select', title);
+    	var tab = $('#tab').tabs('getSelected');
+		var name = $(tab).find("iframe").attr("name");
+		$("#" + tabid).attr("src", url);
+		//window.frames[name].src=url;
+    }  
+}  
+
+//关闭当前页
+function closeCurrent(e,title,index){
+	if(index == 0){
+		return;
+	}
+	$("#tab").tabs("close",index);
+}
+
+//关闭其他页
+function closeOthers(e,title,index){
+	$(".closeable").find(".tabs-close").click();
+}
+
+//关闭所有
+function closeAll(){
+	$(".tabs .tabs-close").click();
+}
+
+//刷新
+function refresh(e,title,index){
+	var tab = $('#tab').tabs('getTab',index);
+	var name = $(tab).find("iframe").attr("name");
+	window.frames[name].location.reload(true);
+}
+</script>
+<script src="http://127.0.0.1/web_client/dist/im.js" id="_IMScript"></script>
+<script>
+	var _IM = getQYInstance();
+	_IM.config({
+		code: "144772",
+		version: "developer",
+		language: "zh"
+	});
+	_IM.init();
+</script>
+</body>
+</html>

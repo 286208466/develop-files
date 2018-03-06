@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1' />
+<meta name="renderer" content="webkit">
+<title>官网管理</title>
+<link rel="shortcut icon" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="bookmark" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/gray/easyui.css" id="theme"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/color.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/icon.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/layer.css"/>
+<style>
+
+</style>
+</head>
+<body class="easyui-layout">
+
+	<div data-options="region:'center'" fit="true" border="false" style="padding:10px">
+		<div id="tt" class="easyui-tabs" fit="true">
+	        <div title="网站基本信息" style="padding:10px">
+	            
+	            <form id="ff" method="post">
+	            	<table class="ui-table">
+	            		<tr>
+	            			<td>
+	            				<h3>网站左上角logo：</h3>
+	            				<div>
+	            					<div class="preWrap">
+	                            		<div>
+	                            			<img src="">
+	                            			<input type="file" name="img1" onchange="utils.preview(this)">
+	                            		</div>
+	                            		<a class="chooseBtn">选择<a>&ensp;
+	                            		<a class="clearBtn">清除</a>
+	                            	</div>
+	            				</div>
+	            				
+	            			</td>
+	            		</tr>
+	            		<tr>
+	            			<td>
+	            				<h3>网站底部联系电话：</h3>
+	            				<div>
+	            					<input class="easyui-textbox" name="name" style="width:500px" data-options="required:true">
+	            				</div>
+	            			</td>
+	            		</tr>
+	            		<tr>
+	            			<td>
+	            				<h3>网站底部联系人邮箱：</h3>
+	            				<div>
+	            					<input class="easyui-textbox" name="name" style="width:500px" data-options="required:true">
+	            				</div>
+	            			</td>
+	            		</tr>
+	            		<tr>
+	            			<td>
+	            				<h3>网站底部版权信息：</h3>
+	            				<div>
+	            					<input class="easyui-textbox" name="name" style="width:500px" data-options="required:true">
+	            				</div>
+	            			</td>
+	            		</tr>
+	            		<tr>
+	            			<td colspan="2">
+	            				<a id="saveBtn" class="easyui-linkbutton btn-line-blue">保存</a>
+	            			</td>
+	            		</tr>
+	            	</table>
+	            </form>
+	            
+	        </div>
+	        
+	        <div title="频道管理" style="padding:10px">
+	        
+	       	</div>
+	        
+	    </div>
+	</div>	
+
+	
+<script src="../../src/js/jquery-1.12.4.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/jquery.easyui.min.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/locale/easyui-lang-zh_CN.js"></script>
+<script src="../../src/js/doT.js"></script>
+<script src="../../src/js/utils.js"></script>
+<script>
+
+$(function(){
+	
+	$("#tt").tabs({
+        pill: true
+    });
+	
+	//上传
+	$(".chooseBtn").on("click", function(e){
+		var self = $(e.currentTarget);
+		self.parents(".preWrap").find("input").trigger("click");
+	})
+	
+	//清除
+	$(".clearBtn").on("click", function(e){
+		var self = $(e.currentTarget);
+		self.parents(".preWrap").find("input").val("");
+		self.parents(".preWrap").find("img").attr("src", "");
+	});
+	
+	$("#ff").form({    
+	    url: "",    
+	    onSubmit: function(){    
+	        // do some check    
+	        // return false to prevent submit;    
+	    },    
+	    success: function(data){    
+	        alert(data)    
+	    }    
+	}); 
+	
+	$("#saveBtn").on("click", function(){
+		$("#ff").submit(); 
+	});
+	
+})
+
+</script>
+
+</body>
+</html>

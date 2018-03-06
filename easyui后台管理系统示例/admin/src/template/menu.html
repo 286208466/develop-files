@@ -1,0 +1,41 @@
+<div class="easyui-accordion" data-options="fit:true,border:false">
+	{{ for(var i = 0; i < it.length; i++){ }}
+	 <div title="{{= it[i].menuName }}" style="padding:2px;">
+	 	<div class="easyui-menu" data-options="inline:true" style="width:100%;display:block">
+	 		{{ if(!!it[i].children && it[i].children.length > 0){ }}
+		 		{{ for(var j = 0; j < it[i].children.length; j++){ }}
+					<div>
+						<span data-url="{{= it[i].children[j].url }}" data-tabid="{{= it[i].children[j].menuId }}" onclick="menuEvent(this)">
+							{{= it[i].children[j].menuName }}
+						</span>
+						{{ if(!!it[i].children[j].children && it[i].children[j].children.length > 0){ }}
+							<div style="width:160px">
+								{{ for(var k = 0; k < it[i].children[j].children.length; k++){ }}
+									<div>
+										<span data-url="{{= it[i].children[j].children[k].url }}" data-tabid="{{= it[i].children[j].children[k].menuId }}" onclick="menuEvent(this)">
+											{{= it[i].children[j].children[k].menuName }}
+										</span>
+										{{ if(!!it[i].children[j].children[k].children && it[i].children[j].children[k].children.length > 0){ }}
+											<div style="width:160px">
+												{{ for(var m = 0; m < it[i].children[j].children[k].children.length; m++){ }}
+													<span data-url="{{= it[i].children[j].children[k].children[m].url }}" data-tabid="{{= it[i].children[j].children[k].children[m].menuId }}" onclick="menuEvent(this)">
+														{{= it[i].children[j].children[k].children[m].menuName }}
+													</span>
+												{{}}}
+											</div>
+										{{}}}
+									</div>
+								{{}}}
+							</div>
+						{{}}}
+					</div>
+				{{}}}
+			{{}}}
+		</div>
+	</div>
+    {{}}}
+</div>
+
+
+
+

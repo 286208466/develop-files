@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1' />
+<meta name="renderer" content="webkit">
+<title>官网管理</title>
+<link rel="shortcut icon" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="bookmark" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/gray/easyui.css" id="theme"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/color.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/icon.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/layer.css"/>
+<style>
+#window form {
+	padding: 10px;
+}
+</style>
+</head>
+<body class="easyui-layout">
+	
+	<div data-options="region:'center'" fit="true" border="false" style="padding:10px">
+		<div class="easyui-panel" title="" fit="true">
+			<table id="datagrid" fit="true" border="false"></table>
+		</div>
+	</div>	
+
+	<div id="toolbar" class="toolbar clearfix">
+        
+    </div>
+	    
+	<!-- 弹出框 -->
+	<div id="window" class="easyui-dialog" closed="true" buttons="#window-buttons" title="编辑" data-options="modal:true">
+		<form id="ff" method="post">
+			<input type="hidden" name="id" class="id">
+			<table class="ui-table">
+				<tr>
+					<td>栏目名称：</td>
+					<td>
+						<input type="text" name="username" class="w300 easyui-textbox">
+					</td>
+				</tr>
+				<tr>
+					<td>SEO标题：</td>
+					<td>
+						<input type="text" name="username" class="w300 easyui-textbox">
+					</td>
+				</tr>
+				<tr>
+					<td>关键字：</td>
+					<td>
+						<input type="text" name="username" class="w300 easyui-textbox">
+					</td>
+				</tr>
+				<tr>
+					<td>栏目描述：</td>
+					<td>
+						<input type="text" name="username" class="w300 easyui-textbox">
+					</td>
+				</tr>
+				<tr>
+					<td>顺序编号：</td>
+					<td>
+						<input type="text" name="username" class="w300 easyui-numberspinner">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="window-buttons">
+		<a id="editBtn" class="easyui-linkbutton c6">保存</a>
+		<a class="easyui-linkbutton" onclick="javascript:$('#window').dialog('close')">取消</a>
+	</div>
+    
+<script src="../../src/js/jquery-1.12.4.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/jquery.easyui.min.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/locale/easyui-lang-zh_CN.js"></script>
+<script src="../../src/js/doT.js"></script>
+<script src="../../src/js/utils.js"></script>
+<script>
+
+$(function(){
+	
+	render();
+	
+	$("#ff").form({    
+	    url: "",    
+	    onSubmit: function(){    
+	        // do some check    
+	        // return false to prevent submit;    
+	    },    
+	    success: function(data){    
+	        alert(data)    
+	    }    
+	}); 
+	
+	//编辑
+	$("#editBtn").on("click", function(){
+		$("#ff").submit(); 
+	});
+	
+})
+
+//获取列表
+function render(){
+	utils.datagrid({
+		url: "test/service/role.json",
+		columns: [[
+			{field: "isCkecked", checkbox: true},
+			{field: "id", title: "操作", width: "10%", align: "center", formatter: function(value,row,index){
+				return '<a data-id="' + value + '" onclick="showEditWindow(this)">编辑</a>';
+			}},
+        	{field: "title", title: "顺序编号",width: "10%", align: "center"},
+        	{field: "type", title: "栏目", width: "10%", align: "center"},
+        	{field: "type", title: "更新时间", width: "10%", align: "center"}
+        ]],
+        toolbar: null,
+        buttons: [
+        	
+        ]
+	});
+}
+
+//编辑弹出框
+function showEditWindow(self){
+	var id = $(self).attr("data-id");
+	utils.ajax({
+        url: "/admin/article/info/del",
+        data: {
+            id: id
+        },
+        type: "get",
+        success: function(data){
+        	$("#window .id").val("123456");
+        	$("#window form").form("clear");
+        	$("#window").dialog("open");
+        	$("#window").window("center");
+        }
+    });
+	
+}
+
+</script>
+
+</body>
+</html>

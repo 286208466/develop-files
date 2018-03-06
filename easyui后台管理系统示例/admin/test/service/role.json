@@ -1,0 +1,4 @@
+{"total":2,"rows":[
+	{"roleId":"a0","roleName":"超级管理员","createTime":"2014-11-11","description":"超级管理员"},
+	{"roleId":"a1","roleName":"普通管理员","createTime":"2014-11-11","description":"普通管理员"}
+]}

@@ -1,0 +1,16 @@
+{
+	"success":true,
+	"data":[
+		{"id":1,"text":"系统管理","iconCls":null,"children":[
+			{"id":101,"text":"角色管理","iconCls":null,"checked":true,"children":null},
+			{"id":102,"text":"部门管理","iconCls":null,"children":null},
+			{"id":103,"text":"权限管理","iconCls":null,"checked":true,"children":null},
+			{"id":104,"text":"用户管理","iconCls":null,"checked":true,"children":[
+				{"id":105,"text":"用户列表","iconCls":null,"children":null},
+				{"id":106,"text":"用户类型管理","iconCls":null,"children":null}
+			]}
+		]}
+	
+	],
+	"message":null
+}

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1' />
+<meta name="renderer" content="webkit">
+<title>官网管理</title>
+<link rel="shortcut icon" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="bookmark" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/gray/easyui.css" id="theme"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/color.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/icon.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/layer.css"/>
+<style>
+#window form {
+	padding: 10px;
+}
+.treebox{height:180px;width:310px;border: 1px solid #ccc;border-radius: 5px;}
+</style>
+</head>
+<body class="easyui-layout">
+	
+	<div data-options="region:'center'" fit="true" border="false" style="padding:10px">
+		<div class="easyui-panel" title="" fit="true">
+			<table id="datagrid" fit="true" border="false"></table>
+		</div>
+	</div>	
+	
+	<div id="toolbar" class="toolbar clearfix">
+    	<label>用户账号：<input type="text" class="easyui-textbox"></label>
+    	<label>
+    		角色类型：
+    		<select class="easyui-combobox">
+    			<option>全部</option>
+    			<option>超级管理员</option>
+    		</select>
+    	</label>
+        <a class="easyui-linkbutton" iconCls="icon-search" onclick="">搜索</a>
+        
+        <a class="easyui-linkbutton fr" iconCls="icon-add" onclick="showAddWindow()">添加</a>
+    </div>
+
+	<!-- 弹出框 -->
+	<div id="window" class="easyui-dialog" closed="true" buttons="#window-buttons" title="添加" data-options="modal:true">
+		<form id="ff" method="post">
+			<input type="hidden" name="id" class="id">
+			<table class="ui-table">
+				<tr>
+					<td>用户账号：</td>
+				</tr>
+				<tr>
+					<td><input type="text" name="username" class="w300 easyui-textbox"></td>
+				</tr>
+				<tr>
+					<td>用户密码：</td>
+				</tr>
+				<tr>
+					<td><input type="text" name="password" class="w300 easyui-textbox"></td>
+				</tr>
+				<tr>
+					<td>角色类型：</td>
+				</tr>
+				<tr>
+					<td>
+						<select class="easyui-combobox" style="width:300px">
+			    			<option>全部</option>
+			    			<option>超级管理员</option>
+			    		</select>
+					</td>
+				</tr>
+				<tr>
+					<td>菜单权限：</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="treebox">
+							<ul class="easyui-tree"></ul>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="window-buttons">
+		<a id="addBtn" class="easyui-linkbutton c6">保存</a>
+		<a id="editBtn" class="easyui-linkbutton c6 hide">保存</a>
+		<a class="easyui-linkbutton" onclick="javascript:$('#window').dialog('close')">取消</a>
+	</div>
+    
+<script src="../../src/js/jquery-1.12.4.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/jquery.easyui.min.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/locale/easyui-lang-zh_CN.js"></script>
+<script src="../../src/js/doT.js"></script>
+<script src="../../src/js/utils.js"></script>
+<script>
+
+$(function(){
+	
+	//弹出框菜单权限树
+	utils.ajax({
+		url:"/test/service/role_menu.json",
+		type: "get",
+		success:function(data){
+			$('#Window .easyui-tree').tree({	
+				lines:true,
+				checkbox:true,
+				data:data.data
+			});
+		}
+	});
+	
+	render();
+	
+	$("#ff").form({    
+	    url: "",    
+	    onSubmit: function(){    
+	        // do some check    
+	        // return false to prevent submit;    
+	    },    
+	    success: function(data){    
+	        alert(data)    
+	    }    
+	}); 
+	
+	//添加
+	$("#addBtn").on("click", function(){
+		$("#ff").submit(); 
+	});
+	
+	//编辑
+	$("#editBtn").on("click", function(){
+		var nodes = $('#editWindow .easyui-tree').tree('getChecked');
+		console.log(nodes);
+	});
+	
+})
+
+//获取列表
+function render(){
+	utils.datagrid({
+		url: "test/service/role.json",
+		columns:[[
+			{field:'isCkecked',checkbox:true},
+			{field:'id',title:'操作',width:'10%',align:"center",formatter:function(value,row,index){
+				return '<a data-roleid="'+value+'" onclick="editRow(this)"><i class="blue icon-pencil"></i></a>'+
+						'&emsp;<a data-roleid="'+value+'" onclick="delRow(this)"><i class="gray icon-trash-o"></i></a>';
+			}},
+        	{field:'name',title:'用户名称',width:'30%',align:"center"},
+        	{field:'role',title:'角色类型',width:'30%',align:"center"},
+        	{field:'createTime',title:'创建时间',width:'20%',align:"center"}
+        ]],
+        toolbar:"#toolbar",
+        buttons: [
+        	
+        ]
+	});
+}
+
+//添加弹出框
+function showAddWindow(){
+	$("#window").window({
+	    title: "添加"
+	});
+	$("#window .id").val("");
+	$("#addBtn").removeClass("hide");
+	$("#editBtn").addClass("hide");
+	$("#window form").form("clear");
+	$("#window").dialog("open");
+	$("#window").window("center");
+}
+
+//编辑弹出框
+function showEditWindow(self){
+	var id = $(self).attr("data-id");
+	utils.ajax({
+        url: "/admin/article/info/del",
+        data: {
+            id: id
+        },
+        type: "get",
+        success: function(data){
+        	$("#window").window({
+        	    title: "编辑"
+        	});
+        	$("#window .id").val("123456");
+        	$("#addBtn").addClass("hide");
+        	$("#editBtn").removeClass("hide");
+        	$("#window form").form("clear");
+        	$("#window").dialog("open");
+        	$("#window").window("center");
+        }
+    });
+	
+}
+
+//删除
+function delRow(self){
+	$.messager.confirm("警告", "是否确定删除该数据?", function(r){
+        var id = $(self).attr("data-id");
+        if(r){
+            utils.ajax({
+                url: "/admin/article/info/del",
+                data: {
+                    id: id
+                },
+                type: "get",
+                success: function(data){
+                    $("#datagrid").datagrid("reload");
+                }
+            });
+        }
+    });
+}
+</script>
+
+</body>
+</html>

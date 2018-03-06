@@ -1,0 +1,38 @@
+{
+	"success":true,
+	"message":null,
+	"data":[
+		{"menuId":"a1","menuName":"系统管理","url":null,"children":[
+			{"menuId":"a12","menuName":"角色管理","url":"view/system/role","children":null},
+			{"menuId":"a13","menuName":"用户管理","url":"view/system/user","children":null},
+			{"menuId":"a14","menuName":"登录日志","url":"view/system/log","children":null}
+		]},
+		{"menuId":"a4","menuName":"客户管理","url":null,"children":[
+			
+		]},
+		{"menuId":"a3","menuName":"数据报表","url":null,"children":[
+			
+		]},
+		{"menuId":"a5","menuName":"呼叫中心","url":null,"children":[
+			{"menuId":"a51","menuName":"呼叫管理","url":"view/call/list","children":null}
+		]},
+		{"menuId":"a6","menuName":"官网管理","url":null,"children":[
+			{"menuId":"a61","menuName":"网站信息设置","url":"view/home/info","children":null},
+			{"menuId":"a62","menuName":"轮播图设置","url":"view/home/banner","children":null},
+			{"menuId":"a65","menuName":"友情链接","url":"view/home/friendlinks","children":null},
+			{"menuId":"a68","menuName":"下载APP","url":"view/home/app","children":null},
+			{"menuId":"a67","menuName":"标签管理","url":"view/home/tag","children":null},
+			{"menuId":"a63","menuName":"资讯管理","url":"","children": [
+				{"menuId":"a633","menuName":"广告图","url":"view/home/newsAd","children":null},
+				{"menuId":"a634","menuName":"栏目","url":"view/home/newsColumn","children":null},
+				{"menuId":"a635","menuName":"文章","url":"view/home/newsList","children":null}
+			]},
+			{"menuId":"a64","menuName":"帮助管理","url":"","children":[
+				{"menuId":"a643","menuName":"栏目","url":"view/home/helpColumn","children":null},
+				{"menuId":"a644","menuName":"新手引导","url":"view/home/helpGuide","children":null},
+				{"menuId":"a645","menuName":"更新说明","url":"view/home/helpUpdate","children":null},
+				{"menuId":"a646","menuName":"产品文档","url":"view/home/helpDoc","children":null}
+			]}
+		]}
+	]
+}

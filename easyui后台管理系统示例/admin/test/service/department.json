@@ -1,0 +1,9 @@
+{"total":3,"rows":[
+	{"id":"a0","name":"采购部","createTime":"2014-11-11","description":"啊啊啊"},
+	{"id":"a2","name":"财务部","createTime":"2014-11-11","description":"啊啊啊"},
+	{"id":"a1","name":"人事部","createTime":"2014-11-11","description":"斑斑驳驳"},
+	{"id":"a1","name":"总务处","createTime":"2014-11-11","description":"斑斑驳驳"},
+	{"id":"a1","name":"市场部","createTime":"2014-11-11","description":"斑斑驳驳"},
+	{"id":"a1","name":"商务部","createTime":"2014-11-11","description":"斑斑驳驳"},
+	{"id":"a1","name":"客服部","createTime":"2014-11-11","description":"斑斑驳驳"}
+]}

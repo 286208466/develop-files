@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1' />
+<meta name="renderer" content="webkit">
+<title>呼叫管理</title>
+<link rel="shortcut icon" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="bookmark" type="image/x-icon" href="../../src/img/favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/gray/easyui.css" id="theme"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/color.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/js/jquery-easyui-1.5.4/themes/icon.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../../src/css/layer.css"/>
+<style>
+
+</style>
+</head>
+<body class="easyui-layout">
+	
+	<div data-options="region:'center'" fit="true" border="false" style="padding:10px">
+		<div class="easyui-panel" title="当前位置：呼叫管理" fit="true">
+			<table id="datagrid" fit="true" border="false"></table>
+		</div>
+	</div>	
+    
+    <div id="toolbar" class="toolbar">
+    	<input type="text" class="easyui-textbox" prompt="用户账号">
+   		<select class="easyui-combobox" prompt="角色类型">
+   			<option>全部</option>
+   			<option>超级管理员</option>
+   		</select>
+        <a class="easyui-linkbutton" iconCls="icon-search" onclick="">搜索</a>
+    </div>
+	    
+	<!-- 添加弹出框 -->
+	<div id="addWindow" class="easyui-dialog" closed="true" buttons="#addWindow-buttons" title="添加" data-options="modal:true" style="width:350px">
+		<form>
+			<table>
+				<tr>
+					<td>用户账号：</td>
+				</tr>
+				<tr>
+					<td><input type="text" name="username" class="w300 easyui-textbox"></td>
+				</tr>
+				<tr>
+					<td>用户密码：</td>
+				</tr>
+				<tr>
+					<td><input type="text" name="password" class="w300 easyui-textbox"></td>
+				</tr>
+				<tr>
+					<td>角色类型：</td>
+				</tr>
+				<tr>
+					<td>
+						<select class="easyui-combobox" style="width:310px">
+			    			<option>全部</option>
+			    			<option>超级管理员</option>
+			    		</select>
+					</td>
+				</tr>
+				<tr>
+					<td>菜单权限：</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="treebox">
+							<ul class="easyui-tree"></ul>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="addWindow-buttons">
+		<a class="easyui-linkbutton c6" onclick="addUser()">保存</a>
+		<a class="easyui-linkbutton" onclick="javascript:$('#addWindow').dialog('close')">取消</a>
+	</div>
+	
+	
+<script src="../../src/js/jquery-1.12.4.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/jquery.easyui.min.js"></script>
+<script src="../../src/js/jquery-easyui-1.5.4/locale/easyui-lang-zh_CN.js"></script>
+<script src="../../src/js/doT.js"></script>
+<script src="../../src/js/utils.js"></script>
+<script>
+
+$(function(){
+	
+	render();
+	
+})
+
+//获取列表
+function render(){
+	utils.datagrid({
+		url:"../../test/service/user.json",
+		columns:[[
+			{field:'isCkecked', checkbox:true},
+			{field:'id', title:'操作', width:'10%', align:"center", formatter:function(value, row, index){
+				var btn = '<a data-id="' + value + '" onclick="editRow(this)">详情</a>';
+				return btn;
+			}},
+        	{field:'name', title:'公司代码', width:'10%', align:"center"},
+        	{field:'name', title:'公司名称', width:'10%', align:"center"},
+        	{field:'name', title:'应用ID', width:'10%', align:"center"},
+        	{field:'name', title:'开通电话', width:'10%', align:"center"},
+        	{field:'name', title:'号码来源', width:'10%', align:"center"},
+        	{field:'name', title:'开通时间', width:'10%', align:"center"},
+        	{field:'role', title:'到期时间', width:'10%', align:"center"},
+        	{field:'role', title:'呼出分钟数', width:'10%', align:"center"},
+        	{field:'role', title:'呼入分钟数', width:'10%', align:"center"},
+        	{field:'role', title:'剩余通话分钟数', width:'10%', align:"center"},
+        	{field:'role', title:'状态', width:'10%', align:"center"}
+        ]],
+        toolbar:'#toolbar',
+        buttons:[
+        	{
+				iconCls:'icon-add',
+				text:"添加",
+				handler:function(){
+					$("#addWindow form").form("clear");
+					$('#addWindow').dialog('open');
+					$('#addWindow').window('center');
+					
+				}
+			}
+        ]
+	});
+}
+
+//添加
+function addUser(){
+	
+}
+
+//删除
+function delRow(self){
+	$.messager.confirm('提示', '确定要删除该条数据吗？', function(flag) {
+		if(flag){
+			utils.ajax({
+				url:'test/service/deleteRole',
+				data:{},
+				success:function(data){
+					$('#datagrid').datagrid('reload');
+				}
+			});
+		}
+	});
+}
+</script>
+
+</body>
+</html>
