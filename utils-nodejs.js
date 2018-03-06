@@ -1,5 +1,6 @@
 var http = require("http");
 var qs = require("querystring");
+var mysql = require("mysql");
 
 var server = {
 	name: "10.41.13.82",
@@ -17,6 +18,30 @@ utils.json = function(res, ret){
         });
     }else{
         res.status(200).json(ret);
+    }
+}
+
+//与mysql建立连接
+utils.createConnection = function(){
+	var conn = mysql.createConnection({
+	    host: '10.41.13.136',
+	    user: 'root',
+	    password: '123456',
+	    database: '71sino_web',
+	    port: 3306
+	});
+    return conn;
+}
+
+//校验是否登录
+utils.checkLogin = function(req, res, callback){
+	if(req.session.user){
+        res.locals.user = req.session.user;
+    }
+    if(!req.session.user){
+        res.redirect("/login");
+    }else{
+        callback();
     }
 }
 

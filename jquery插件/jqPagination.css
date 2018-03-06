@@ -1,0 +1,84 @@
+/*
+	分页插件样式
+	http://beneverard.github.com/jqPagination
+*/
+.pagination {
+	text-align: right;
+	line-height: 26px;
+	color: #999;
+	margin-top: 15px;
+	font-size: 12px;
+}
+.pagination:after {
+    clear:both;
+    content:"";
+    display:block;
+    height:0;
+}
+.pagination a {
+	margin: 0 3px;
+	border: 1px solid #ebeced;
+	display: inline-block;
+	width: 26px;
+	line-height: 24px;
+	color: #555555;
+	vertical-align: middle;
+	text-align: center;
+	text-decoration: none;
+	background-color: #f1f1f1;
+    background: -webkit-linear-gradient(top,#fff 0,#f1f1f1 100%);
+    background: -moz-linear-gradient(top,#fff 0,#f1f1f1 100%);
+    background: -o-linear-gradient(top,#fff 0,#f1f1f1 100%);
+    background: linear-gradient(to bottom,#fff 0,#f1f1f1 100%);
+    background-repeat: repeat-x;
+    font-family: 黑体;
+}
+.pagination a:hover, .pagination a:focus, .pagination a:active {
+	background-color: #efefef;
+}
+.pagination a.disabled, .pagination a.disabled:hover, .pagination a.disabled:focus, .pagination a.disabled:active {
+    background-color: #f3f3f3;
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f3f3f3), color-stop(100%, lightgrey));
+    background-image: -webkit-linear-gradient(#f3f3f3, lightgrey);
+    background-image: linear-gradient(#f3f3f3, lightgrey);
+    color: #A8A8A8;
+    cursor: default; 
+}
+.pagination label {
+	vertical-align: middle;
+	margin-left: 15px;
+}
+.pagination input {
+	margin: 0!important;
+	padding: 0!important;
+	width: 56px!important;
+	height: 28px!important;
+	outline: none!important;
+	border: 1px solid #ebeced;
+	vertical-align: middle!important;
+	text-align: center; 
+	color: #333!important;
+}
+.pagination input:focus {
+	box-shadow: none;
+}
+.pagination select {
+	border: 1px solid #ddd;
+	width: 50px;
+	height: 26px;
+	line-height: 26px;
+	margin: 0 4px;
+}
+.pagination > span {
+	vertical-align: middle;
+}
+.pagination em {
+	font-style: normal;
+	vertical-align: middle;
+}
+.pagination em em {
+	vertical-align: baseline;
+}
+.pagination .go {
+	color: #999;
+}

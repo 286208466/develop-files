@@ -1,0 +1,54 @@
+/*
+	滚动插件样式
+	http://www.jqueryfuns.com/resource/2048
+*/
+.nano {
+  	position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden
+}
+.nano > .nano-content {
+  	position: absolute;
+    overflow: scroll;
+    overflow-x: hidden;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0
+}
+.nano>.nano-content::-webkit-scrollbar {
+    display: none
+}
+.nano>.nano-content:focus {
+    outline: 0 !important
+}
+.nano>.nano-pane {
+    background-color: #efefef;
+    position: absolute;
+    width: 4px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    opacity: 0;
+    transition: all .7s
+}
+.nano>.nano-pane>.nano-slider {
+    background-color: rgba(0,116,255,0.5);
+    position: relative;
+    margin: 0;
+    border-radius: 0;
+    opacity: .85
+}
+.nano.nano-hide {
+    display: none !important
+}
+.has-scrollbar>.nano-content::-webkit-scrollbar {
+    display: block
+}
+.nano:hover>.nano-pane,.nano-pane.active,.nano-pane.flashed {
+    opacity: .99
+}
+.nano>.nano-pane>.nano-slider {
+    background-color: #CCCCCC
+}

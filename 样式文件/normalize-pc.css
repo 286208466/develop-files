@@ -243,3 +243,16 @@ mark {
     background-color: #177bbb;
     color: #fff
 }
+/*
+	滚动条样式
+*/
+::-webkit-scrollbar {
+	background: #f9f9f9;
+	width: 5px;
+}
+::-webkit-scrollbar-thumb {
+	background: #ddd;
+}
+::-webkit-scrollbar-button{
+	height: 0;
+}

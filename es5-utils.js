@@ -106,6 +106,19 @@ Date.prototype.format = function(format){
         return null;
     }
     
+    //检测浏览器，如果是ie7、ie6 显示提示升级浏览器信息
+    Utils.prototype.updateIE = function(){
+    	var browser = navigator.appName;
+        if(browser == "Microsoft Internet Explorer"){
+            var b_version = navigator.appVersion;
+            var version = b_version.split(";");
+            var trim_Version = version[1].replace(/[ ]/g,"");
+            if( trim_Version == "MSIE7.0" || trim_Version == "MSIE6.0"){
+                window.location.href = "../../system/ie.html";
+            }
+        }
+    }
+    
     Utils.prototype.isPc = function(){  
         var userAgentInfo = navigator.userAgent;  
         var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");  
@@ -132,7 +145,7 @@ Date.prototype.format = function(format){
             async: _async,
             contentType: _contentType,
             beforeSend: function(request){
-                //util.loading("show");
+                //utils.loading("show");
             },
             success: function(data){
                 //if(data.errorCode == 0){
@@ -153,9 +166,34 @@ Date.prototype.format = function(format){
                 }
             },
             complete: function() {
-                //util.loading("hide");
+                //utils.loading("hide");
             }
         });
+    }
+    
+    //获取随机颜色
+    Utils.prototype.getRandomColor = function(){
+    	return "#"+("00000"+((Math.random()*16777215+0.5)>>0).toString(16)).slice(-6);
+    }
+    
+    //加载js
+    Utils.prototype.loadScript = function(){
+    	var script = document.createElement("script")
+        script.type = "text/javascript";
+        if(script.readyState){  //IE
+            script.onreadystatechange = function(){
+                if (script.readyState == "loaded" || script.readyState == "complete"){
+                    script.onreadystatechange = null;
+                    callback();
+                }
+            };
+        }else{  //Others
+            script.onload = function(){
+                callback();
+            };
+        }
+        script.src = url;
+        document.getElementsByTagName("head")[0].appendChild(script);
     }
 
     root.util = new Utils();
