@@ -73,6 +73,18 @@ module.exports = function(grunt){
             }
         },
         
+        //concat插件的配置信息
+        //concat: {
+        //    options:{
+        //        stripBanners:true, //合并时允许输出头部信息
+        //        banner:'/*!<%= pkg.name %> - <%= pkg.version %>*/'
+        //    },
+        //    cssConcat:{
+        //        src:['src/css/normalize.css','src/css/ui.css','src/css/style.css'],
+        //        dest:'src/css/all.css' //dest 是目的地输出
+        //    }
+        //},
+        
         //less插件配置
         less: {
         	production: {
@@ -115,6 +127,7 @@ module.exports = function(grunt){
         watch: {
             build:{
                 files:['src/less/*.less', 'src/js/*.js', 'src/css/*.css'],
+                //按需要是否加入'concat'
                 tasks:['less', 'uglify', 'sprite', 'cssmin'],
                 options:{
                 	spawn: false
@@ -125,11 +138,13 @@ module.exports = function(grunt){
  
     });
     
+	//grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-css-sprite');
     grunt.loadNpmTasks('grunt-contrib-watch');
     
+    //按需要是否加入'concat'
     grunt.registerInitTask('default', ['less', 'uglify', 'sprite', 'cssmin', 'watch']);
 };
