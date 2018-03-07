@@ -1,0 +1,75 @@
+<!DOCTYPE html><html><head><title>gitbook使用教程</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style></style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h2 id="gitbook使用教程">gitbook使用教程</h2>
+
+
+
+<h3 id="gitbook安装">gitbook安装</h3>
+
+<p>GitBook 是一个基于 Node.js 的命令行工具，可使用 Github/Git 和 Markdown 来制作精美的电子书。通过Node.js命令安装GitBook</p>
+
+<p>1、NMP安装Gitbook  </p>
+
+<pre class="prettyprint hljs-dark"><code class="hljs cmake"><div class="hljs-line">npm <span class="hljs-keyword">install</span> gitbook -g
+</div></code></pre>
+
+<p>2、安装gitbook CLI  </p>
+
+<p>想在系统上的任何地方的gitbook命令，需要安装“gitbook CLI”，执行以下命令  </p>
+
+<pre class="prettyprint hljs-dark"><code class="hljs stata"><div class="hljs-line"><span class="hljs-comment">//安装命令</span>
+</div><div class="hljs-line">npm install -<span class="hljs-keyword">g</span> gitbook-<span class="hljs-keyword">cli</span>
+</div><div class="hljs-line"><span class="hljs-comment">//卸载命令</span>
+</div><div class="hljs-line">npm uninstall gitbook-<span class="hljs-keyword">cli</span> -<span class="hljs-keyword">g</span>
+</div></code></pre>
+
+<p>3、检验下是否安装成功  </p>
+
+<pre class="prettyprint hljs-dark"><code class="hljs 1c"><div class="hljs-line">gitbook -V <span class="hljs-comment">//显示0.4.2  </span>
+</div></code></pre>
+
+<h3 id="开始使用">开始使用</h3>
+
+<p>1、创建doc文件夹，并切换到doc目录，运行gitbook init</p>
+
+<pre class="prettyprint hljs-dark"><code class="hljs ceylon"><div class="hljs-line">mkdir <span class="hljs-meta">doc</span> &amp;&amp; cd <span class="hljs-meta">doc</span>  
+</div><div class="hljs-line">gitbook init
+</div></code></pre>
+
+<p>然后会初始化 GitBook 目录，创建两个 md 格式的文件 README.md 和 SUMMARY.md  </p>
+
+<p>README.md - 项目的介绍都写在这个文件里。 <br>
+SUMMARY.md - GitBook 的目录结构在这里配置。</p>
+
+<p>2、定义目录结构  </p>
+
+<p>（1）先定义好目录结构，通过 gitbook init 自动生成目录结构对应的文件夹和 Markdown 文件。  </p>
+
+<p>（2）先创建好文件夹和 Markdown 文件再来编辑目录结构。  </p>
+
+<pre class="prettyprint hljs-dark"><code class="hljs markdown"><div class="hljs-line"><span class="hljs-section"># Summary  </span>
+</div><div class="hljs-line"><span class="hljs-bullet">* </span>[<span class="hljs-string">Introduction</span>](<span class="hljs-link">README.md</span>)  
+</div><div class="hljs-line"><span class="hljs-bullet">* </span>[<span class="hljs-string">开发指南</span>](<span class="hljs-link">README.md</span>) 
+</div><div class="hljs-line"><span class="hljs-bullet">* </span>[<span class="hljs-string">工具类utils.js</span>](<span class="hljs-link">utils.md</span>)  
+</div><div class="hljs-line"><span class="hljs-bullet">* </span>[基础组件]  
+</div><div class="hljs-line"><span class="hljs-code">    * [Layout布局](ui/layout.md)  </span>
+</div><div class="hljs-line"><span class="hljs-code">    * [Color色彩](ui/color.md)  </span>
+</div></code></pre>
+
+<p>编辑好SUMMARY.md后执行下面命令  </p>
+
+<pre class="prettyprint hljs-dark"><code class="hljs ebnf"><div class="hljs-line"><span class="hljs-attribute">gitbook init</span>  
+</div></code></pre>
+
+<p>注意： gitbook init 只支持生成两级目录  </p>
+
+<p>3、启动服务  </p>
+
+<pre class="prettyprint hljs-dark"><code class="hljs ebnf"><div class="hljs-line"><span class="hljs-attribute">gitbook serve</span>  
+</div></code></pre>
+
+<p>在浏览器中输入<a href="http://localhost:4000/" target="_blank">http://localhost:4000/</a> 查看API文档</p></div></body></html>

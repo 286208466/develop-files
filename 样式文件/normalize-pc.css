@@ -41,10 +41,18 @@ body {
     font-family: "Microsoft Yahei", Tahoma, Verdana, Arial, Helvetica, sans-serif;
     /* font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif; */
     color: #5e6d82;
-    /* color: #333; */
-    /* color: #8f9ea6; */
-    /* background: #F1F2F6; */
-    /* background: #f4f4f4; */
+    /*
+    	默认文字颜色
+    	#333;
+    	#8f9ea6;
+    */
+    background: #F1F2F6;
+    /*
+    	背景色：
+    	#f6f8fa;
+    	#E7EBEE;
+    	#f4f4f4;
+    */
 }
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
     display: block;
@@ -86,6 +94,7 @@ a {
 a:link {
     /* color: #333; */
     /* color: #8f9ea6; */
+    color: #0099cc;
 }
 a:hover {
     text-decoration: none;

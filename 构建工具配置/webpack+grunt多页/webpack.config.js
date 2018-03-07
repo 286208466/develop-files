@@ -11,23 +11,6 @@ var SpritesmithPlugin = require('webpack-spritesmith');
 
 var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
-//雪碧图地址
-var env = "test"
-var config = {
-	dev: {
-		domain: "http://127.0.0.1:9010/"
-	},
-	test: {
-		domain: "http://test.kefu.com/"
-	},
-	pre: {
-		domain: "https://demo-www.71chat.com/"
-	},
-	pro: {
-		domain: "https://71chat.com/"
-	}
-}
-
 module.exports = {
 	entry: entry
 	,output: {
@@ -51,10 +34,34 @@ module.exports = {
 	            test: /\.art$/,
 	            loader: "art-template-loader",
 	            options: {
+	            	htmlResourceRules: false,
+	            	escape: false
 	                // art-template options (if necessary)
 	                // @see https://github.com/aui/art-template
 	            }
 	        },
+	        /*{
+	            test: /\.(png|jpg|gif)$/,
+	            loader: 'url-loader?limit=1&name=img/[name].[ext]'
+	        },*/
+	        /*{
+	            test: /\.(png|jpe?g|gif|ico)(\?\S*)?$/,
+	            loader: 'file-loader',
+	            query: {
+	                name: '../dist/img/[name].[ext]'
+	            }
+	        },*/
+	        /*{
+	            test: /\.(png|jpg|gif)$/,
+	            use: [
+	              {
+	                loader: 'url-loader',
+	                options: {
+	                  limit: 8192
+	                }
+	              }
+	            ]
+	        },*/
             {
                 test: /\.(png|jpe?g|gif|ico)(\?\S*)?$/,
                 loader: 'file-loader',
@@ -80,7 +87,7 @@ module.exports = {
             },
             // 样式文件中调用雪碧图地址写法
             apiOptions: {
-                cssImageRef: config[env].domain + 'dist/img/sprite/sprite.png'
+                cssImageRef: './dist/img/sprite/sprite.png'
             },
             spritesmithOptions: {
                 algorithm: 'top-down'
