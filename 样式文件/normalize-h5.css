@@ -2,6 +2,11 @@
 	h5端的css重置
 	注释项可以自己的需要选择
 */
+* {
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
 html {
 	/*
 		禁止文字自动调整大小

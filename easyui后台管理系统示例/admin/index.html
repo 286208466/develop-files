@@ -13,35 +13,48 @@
 <link rel="stylesheet" type="text/css" href="src/css/common.css"/>
 <link rel="stylesheet" type="text/css" href="src/css/layer.css"/>
 <style>
-.north .panel-header,.north .panel-body{
-	border:none;
-	background:none;
+.north .panel-header,.north .panel-body{border:none;background:none;}
+.north {
+	background: #003366;
+	/* background: #0B63C4; */
+	height: 38px;
 }
-.north .panel{
-	margin-top:12px;
+.north ul {margin-top: 10px;margin-right: 15px;}
+.north li {display: inline-block;margin-left: 12px;}
+.north a {color: #efefef;}
+.north a:hover {color: #fff;}
+.north .logo {color: #fc0;font-size: 14px;line-height: 38px;padding: 0 10px;}
+.south {
+	/* background: #EEF4FE; */
 }
-.south p{
-	line-height:40px;
-	text-align:center;
+.south p {line-height:48px;text-align:center;}
+#center .tabs-header {
+	background: #003366;
+	/* background: #0B63C4; */
 }
-#west{
-	width:180px;
-}
-#west .menu {
-	background: #fff;
-}
-#pwdWindow>form {
-	padding: 10px;
-}
+#center .tabs li a.tabs-inner {border-radius: 0;}
+#west {width:180px;}
+#west .menu {background: transparent;}
+#west .menu-line {display: none;}
+#west .menu-text {padding-left: 10px;}
+#west .accordion-body>.menu {border: none;}
+#west .menu-active {background: #E5F1F8;border-color: #E5F1F8;}
+#pwdWindow>form {padding: 10px;}
+.accordion .accordion-header-selected {background: #51B737;}
+body>.menu-shadow {box-shadow: 0 0 15px rgba(0,0,0,0.2)}
+body>.menu {background: #fff;}
+body>.menu>.menu-line {display: none;}
+body>.menu .menu-text {padding-left: 10px;}
+body>.menu .menu-active {background: #E5F1F8;border-color: #E5F1F8;}
 </style>
 </head>
 <body class="easyui-layout">
 	
-	<div data-options="region:'north'" class="north">
+	<div data-options="region:'north'" class="north" border="false">
     	<div class="clearfix">
     		<div class="fl">
     			<a class="logo">
-    				
+    				官网后台管理系统
     			</a>
     		</div>
     		<div class="fr">
@@ -63,14 +76,14 @@
     	</div>
     </div>
     
-    <div data-options="region:'south',split:true" class="south">
+    <div data-options="region:'south'" class="south">
     	<p>&copy; 2018 深圳柒壹思诺</p>
     </div>
     
-    <div data-options="region:'west',split:true" title="菜单栏" id="west">
+    <div data-options="region:'west'" title="菜单栏" id="west">
     	      
     </div>
-    <div data-options="region:'center'">
+    <div data-options="region:'center'" border="false" id="center">
      	<div id="tab" class="easyui-tabs" fit="true" border="false">
 		    <div title="首页" style="height:100%">
 		   		<iframe name="default" id="default" src="view/default" width="100%" height="100%" frameborder="0" scrolling="auto" ></iframe>
@@ -132,13 +145,22 @@ $(function(){
 		success: function(data){
 			var tpl = doT.template(utils.template("src/template/menu.html"))(data.data);
 			$("#west").html(tpl);
-			$("#west .easyui-menu").menu();
-		    $("#west .easyui-accordion").accordion();
+			$("#west .easyui-menu").menu({
+				itemHeight: 30
+			});
+		    $("#west .easyui-accordion").accordion({
+		    	border: false
+		    });
 		    
 		}
 	});
 	
+	$("#tabMenu").menu({
+		itemHeight: 26
+	});
+	
 	$("#tab").tabs({
+		tabHeight: 30,
 		onContextMenu:function(e, title,index){
 			e.preventDefault();
 			$('#tabMenu').menu('show', {

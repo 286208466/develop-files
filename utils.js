@@ -104,45 +104,52 @@
     
     //封装ajax
     Utils.prototype.ajax = function(param){
-        var _url = param.url;
-        var _data = !!param.data ? param.data : {};
-        var _type = !!param.type?param.type:"post";
-        var _async = (typeof param.async)!='undefined'?param.async:true;
-        var _contentType = !!param.contentType?param.contentType:"application/x-www-form-urlencoded";
-        $.ajax({
-            url: _url,
-            data: _data,
-            type: _type,
-            dataType: "json",
-            cache: false,
-            async: _async,
-            contentType: _contentType,
-            beforeSend: function(request){
-                //utils.loading("show");
-            },
-            success: function(data){
-                //if(data.errorCode == 0){
-                    if(param.success) {
-                        param.success(data);
-                    }
-                //}
-                // }else{
-                //     //alert(!!data.errorMsg ? data.errorMsg : "开小差了~");
-                // }
-                
-            },
-            error: function(res){
-                var warning = $.parseJSON(res.responseText);
-                //console.log(!!warning.errorMsg ? warning.errorMsg : "开小差了~");
-                if(typeof param.error == "function"){
-                    param.error(res);
-                }
-            },
-            complete: function() {
-                //utils.loading("hide");
-            }
-        });
-    }
+    	
+    	//按钮防重复提交
+		if(param.el){
+			if(param.el.hasClass("loadingBtn")) return;
+			param.el.addClass("loadingBtn");
+		}
+		
+		let _url = param.url;
+		let _data = param.data || {};
+		let _type = !!param.type ? param.type : "post";
+		let _async = (typeof param.async) != 'undefined' ? param.async : true;
+		let _contentType = !!param.contentType ? param.contentType : "application/x-www-form-urlencoded";
+		$.ajax({
+			url: _url,
+			data: _data,
+			type: _type,
+			dataType: "json",
+			cache: false,
+			async: _async,
+			contentType: _contentType,
+			beforeSend: function(request){
+				param.beforeSend && param.beforeSend(request);
+			},
+			success: function(data){
+				if(typeof param.success == "function"){
+					param.success(data);
+				}
+			},
+			error: function(res){
+				if(typeof param.error == "function"){
+					param.error(res);
+				}
+			},
+			complete: function() {
+				param.complete && param.complete();
+				
+				//按钮防重复提交
+				if(param.el){
+					setTimeout(function(){
+						param.el.removeClass("loadingBtn");
+					}, 1500);
+				}
+				
+			}
+		});
+	}
     
     //获取随机颜色
     Utils.prototype.getRandomColor = function(){
