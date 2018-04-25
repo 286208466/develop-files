@@ -1,0 +1,16 @@
+  	
+<%- include header %>
+
+<% for(var i=0;i<posts.length;i++){ %>
+
+	<p><h2><a href="#"><%= posts[i].title %></a></h2></p>
+	<p class="info">
+		作者： <a href="#"><%= posts[i].name %></a> | 
+		日期：<%= posts[i].time.minute %>
+	</p>
+	
+	<p><%- posts[i].post %></p>
+<% } %>
+
+<%- include footer %>  	
+
