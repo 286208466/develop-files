@@ -16,13 +16,17 @@ var users = require('./routes/users');
 
 var app = express();
 
+var fs = require("fs")
+var accessLog = fs.createWriteStream("access.log", {flags: "a"})
+var errorLog = fs.createWriteStream("error.log", {flags: "a"})
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+app.use(logger({stream: accessLog}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -42,6 +46,11 @@ app.use(session({
 
 app.use('/', index);
 app.use('/users', users);
+
+app.use(function(err, req, res, next){
+	var meta="["+new Date()+"]"+req.url+"\n";
+	errorLog.write(meta+err.stack+"\n")
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

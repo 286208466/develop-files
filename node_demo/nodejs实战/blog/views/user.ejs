@@ -10,7 +10,20 @@
 	</p>
 	<p class="info">
 		作者：<a href="/u/<%=posts[i].name%>"><%=posts[i].name%></a> |
-		日期：<%= posts[i].time.minute %>
+		日期：<%= posts[i].time.minute %> | 
+		标签： 
+		<% if(posts[i].tags){ %>
+		<% for(var k=0;k<posts[i].tags.length;k++){ %>
+			<% if(posts[i].tags[k]){ %>
+				<a class="tag" href="/tags/<%=posts[i].tags[k]%>"><%= posts[i].tags[k] %></a>
+			<% } %>
+		<% } %>
+		<% } %>
+		
+		<% if(posts[i].reprint_info.reprint_from){ %>
+			<br>
+			<a href="/u/<%=posts[i].reprint_info.reprint_from.name%>/<%=posts[i].reprint_info.reprint_from.day%>/<%=posts[i].reprint_info.reprint_from.title%>">原文链接</a>
+		<% } %>
 	</p>
 	<p><%- posts[i].post %></p>
 <% } %>

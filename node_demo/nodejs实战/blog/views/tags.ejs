@@ -1,0 +1,7 @@
+<%- include header %>
+
+<% for(var i=0;i<posts.length;i++){ %>
+	<a class="tag" href="/tags/<%=posts[i]%>"><%=posts[i]%></a>
+<% } %>
+
+<%- include footer %>

@@ -122,7 +122,9 @@ router.post('/login', function(req, res, next) {
 router.post('/post', checkLogin);
 router.post('/post', function(req, res, next) {
 	var currentUser = req.session.user;
-	var post = new Post(currentUser.name, req.body.title, req.body.post);
+	var tags = [req.body.tag1, req.body.tag2, req.body.tag3];
+	
+	var post = new Post(currentUser.name, req.body.title, tags, req.body.post);
 	post.save(function(err){
 		if(err){
 			req.flash("error", err);
@@ -192,6 +194,22 @@ router.post('/upload', function(req, res, next) {
 	
 	
 });
+
+router.get("/search", function(req, res, next){
+	Post.search(req.query.keyword, function(err, posts){
+		if(err){
+			req.flash("error", err);
+			return res.redirect("/")
+		}
+		res.render("search", {
+			title: "search:" + req.query.keyword,
+			posts: posts,
+			user: req.session.user,
+			success: req.flash("success").toString(),
+			error: req.flash("error").toString()
+		})
+	})
+})
 
 //根据用户名、发表日期、标题精确获取一篇文章
 router.get("/u/:name", function(req, res, next){
@@ -302,6 +320,77 @@ router.get("/remove/:name/:day/:title", function(req, res, next){
 		}
 		req.flash("success", "删除成功");
 		res.redirect("/");
+	})
+})
+
+router.get("/archive", function(req, res, next){
+	Post.getArchive(function(err, posts, total){
+		if(err){
+			req.flash("error", err);
+			return res.redirect("/");
+		}
+		res.render("archive", {
+			title: "存档",
+			posts: posts,
+			user: req.session.user,
+			success: req.flash("success").toString(),
+			error: req.flash("error").toString()
+		})
+	})
+})
+
+router.get("/tags", function(req, res, next){
+	Post.getTags(function(err, posts){
+		if(err){
+			req.flash("error", err);
+			return res.redirect("/");
+		}
+		res.render("tags", {
+			title: "标签",
+			posts: posts,
+			user: req.session.user,
+			success: req.flash("success").toString(),
+			error: req.flash("error").toString()
+		})
+	})
+})
+
+router.get("/tags/:tag", function(req, res, next){
+	Post.getAllByTag(req.params.tag, function(err, posts){
+		if(err){
+			req.flash("error", err);
+			return res.redirect("/");
+		}
+		res.render("tag", {
+			title: "Tag:" + req.params.tag,
+			posts: posts,
+			user: req.session.user,
+			success: req.flash("success").toString(),
+			error: req.flash("error").toString()
+		})
+	})
+})
+
+router.get("/reprint/:name/:day/:title", checkLogin);
+router.get("/reprint/:name/:day/:title", function(req, res, next){
+	Post.edit(req.params.name, req.params.day, req.params.title, function(err, post){
+		if(err){
+			req.flash("error", err);
+			return res.redirect("back");
+		}
+		var currentUser = req.session.user;
+		var reprint_from = {name: post.name, day: post.time.day, title: post.title};
+		var reprint_to = {name: currentUser.name};
+		console.log("posts2-----------", reprint_to)
+		Post.reprint(reprint_from, reprint_to, function(err, post2){
+			if(err){
+				req.flash("error", err);
+				return res.redirect("back");
+			}
+			req.flash("success", "转载成功");
+			var url = "/u/" + post.name + "/" + post.time.day + "/" + post.title;
+			res.redirect(url);
+		})
 	})
 })
 

@@ -10,9 +10,44 @@
 	</span>
 	<% } %>
 </p>
+
+<% var flag=1 %>
+<% if(user && (user.name != post.name)){ %>
+	<% if(post.reprint_info.reprint_to && post.reprint_info.reprint_from && (user.name == post.reprint_info.reprint_from.name)){ %>
+		<% flag=0 %>
+	<% } %>
+	<% if(post.reprint_info.reprint_to){ %>
+		<% for(var k = 0; k < post.reprint_info.reprint_to.length; k++){ %>
+			<% if(user.name == post.reprint_info.reprint_to[k].name){ %>
+				<% flag=0 %>
+			<% } %>
+		<% } %>
+	<% } %>
+<% }else{ %>
+	<% flag=0 %>
+<% } %>
+
+<% if(flag){ %>
+	<span>
+		<a class="edit" href="/reprint/<%=post.name%>/<%=post.time.day%>/<%=post.title%>">转载</a>
+	</span>
+<% } %>
 <p class="info">
 	作者：<a href="/u/<%=post.name%>"><%=post.name%></a> |
-	日期：<%= post.time.minute %>
+	日期：<%= post.time.minute %> | 
+	标签： 
+	<% if(post.tags){ %>
+	<% for(var k=0;k<post.tags.length;k++){ %>
+		<% if(post.tags[k]){ %>
+			<a class="tag" href="/tags/<%=post.tags[k]%>"><%= post.tags[k] %></a>
+		<% } %>
+	<% } %>
+	<% } %>
+	
+	<% if(post.reprint_info.reprint_from){ %>
+		<br>
+		<a href="/u/<%=post.reprint_info.reprint_from.name%>/<%=post.reprint_info.reprint_from.day%>/<%=post.reprint_info.reprint_from.title%>">原文链接</a>
+	<% } %>
 </p>
 <p><%- post.post %></p>
 

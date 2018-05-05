@@ -5,7 +5,12 @@
 	<input type="hidden" name="day" value="<%=post.time.day%>">
 	标题： <br>
 	<input type="text" name="title" value="<%=post.title%>" readonly="readonly"><br>
-	
+	标签：<br>
+	<% if(post.tags){ %>
+	<input type="text" name="tag1" value="<%=post.tags[0]%>" readonly="readonly">
+	<input type="text" name="tag2" value="<%=post.tags[1]%>" readonly="readonly">
+	<input type="text" name="tag3" value="<%=post.tags[2]%>" readonly="readonly"><br>
+	<%}%>
 	正文：<br>
 	<textarea name="post" rows="20" cols="100"><%=post.post%></textarea><br>
 	
