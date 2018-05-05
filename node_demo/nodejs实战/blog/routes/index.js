@@ -1,18 +1,29 @@
 var express = require('express');
 var router = express.Router();
 var crypto = require("crypto");
+var fs = require("fs");
+
+var formidable = require('formidable');
+var utils = require("../utils.js")
+
 var User = require("../models/user.js");
 var Post = require("../models/post.js");
+var Comment = require("../models/comment.js");
+
 
 router.get('/', function(req, res, next) {
-	Post.get(null, function(err, posts){
+	var page = req.query.p ? parseInt(req.query.p) : 1;
+	Post.getAll(null, page, function(err, posts, total){
 		if(err){
 			posts = [];
 		}
 		res.render('index', { 
 			title: '主页',
-			user: req.session.user,
 			posts: posts,
+			page: page,
+			isFirstPage: (page-1) == 0,
+			isLastPage: ((page-1)*10 + posts.length) == total,
+			user: req.session.user,
 			success: req.flash("success").toString(),
 			error: req.flash("error").toString()
 		});
@@ -129,6 +140,170 @@ router.get('/logout', function(req, res, next) {
 	req.flash("success", "退出成功");
 	res.redirect("/");
 });
+
+//文件上传
+router.get('/upload', checkLogin);
+router.get('/upload', function(req, res, next) {
+	res.render('upload', { 
+		title: '上传',
+		user: req.session.user,
+		success: req.flash("success").toString(),
+		error: req.flash("error").toString()
+	});
+});
+
+router.post('/upload', checkLogin);
+router.post('/upload', function(req, res, next) {
+	
+	
+	var imgLinks = [];
+  	var form = new formidable.IncomingForm();
+  	form.encoding = "utf-8";
+  	form.uploadDir = "public/upload/";
+  	//保留后缀
+  	form.keepExtensions = true;
+  	form.maxFieldsSize = 1024 * 1024 * 1024;
+  	form.hash = false;
+  	form.multiples = false;
+
+  	form.parse(req, function(err, fields, files) {
+      	if (err) {
+      		req.flash("error", "文件上传失败")
+          	return;
+      	}
+      	// 遍历所有上传来的图片
+      	utils.objForEach(files, function(name, file){
+          	if(file.size == 0){
+          		fs.unlinkSync(file.path);
+          	}else{
+          		var name =  new Date().getTime() + "_" + file.name;
+              	fs.renameSync(file.path, (form.uploadDir + name));
+              	imgLinks.push("/upload/" + name);
+          	}
+          	
+      	});
+      	/*utils.json(res, {
+          	errno: 0,
+          	data: imgLinks
+      	});*/
+      	req.flash("success", "文件上传成功")
+    	res.redirect("/upload")
+  	});
+	
+	
+});
+
+//根据用户名、发表日期、标题精确获取一篇文章
+router.get("/u/:name", function(req, res, next){
+	//检查用户是否存在
+	User.get(req.params.name, function(err, user){
+		if(!user){
+			req.flash("error", "用户不存在");
+			return res.redirect("/")
+		}
+		//查询并返回该用户的所有文章
+		var page = req.query.p ? parseInt(req.query.p) : 1;
+		Post.getAll(user.name, page, function(err, posts, total){
+			if(err){
+				req.flash("error", err);
+				return res.redirect("/");
+			}
+			res.render("user", {
+				title: user.name,
+				posts: posts,
+				page: page,
+				isFirstPage: (page-1) == 0,
+				isLastPage: ((page-1)*10 + posts.length) == total,
+				user: req.session.user,
+				success: req.flash("success").toString(),
+				error: req.flash("error").toString()
+			})
+		})
+		
+	})
+})
+
+router.get("/u/:name/:day/:title", function(req, res, next){
+	Post.getOne(req.params.name, req.params.day, req.params.title, function(err, post){
+		if(err){
+			req.flash("error", err);
+			return res.redirect("/");
+		}
+		res.render("article", {
+			title: req.params.title,
+			post: post,
+			user: req.session.user,
+			success: req.flash("success").toString(),
+			error: req.flash("error").toString()
+		})
+	})
+})
+router.post("/u/:name/:day/:title", function(req, res, next){
+	var date = new Date();
+	var time = date.getTime();
+	var comment = {
+		name: req.body.name,
+		email: req.body.email,
+		website: req.body.website,
+		time: time,
+		content: req.body.content
+	}
+	var newComment = new Comment(req.params.name, req.params.day, req.params.title, comment);
+	newComment.save(function(err){
+		if(err){
+			req.flash("error", err);
+			return res.redirect("back");
+		}
+		req.flash("success", "留言成功")
+		res.redirect("back");
+	})
+})
+
+router.get("/edit/:name/:day/:title", checkLogin);
+router.get("/edit/:name/:day/:title", function(req, res, next){
+	Post.getOne(req.session.user.name, req.params.day, req.params.title, function(err, post){
+		if(err){
+			req.flash("error", err);
+			return res.redirect("/");
+		}
+		res.render("edit", {
+			title: "编辑",
+			post: post,
+			user: req.session.user,
+			success: req.flash("success").toString(),
+			error: req.flash("error").toString()
+		})
+	})
+})
+
+router.post("/edit", checkLogin);
+router.post("/edit", function(req, res, next){
+	var user = req.session.user;
+	var day = req.body.day;
+	var title = req.body.title;
+	var post = req.body.post
+	Post.update(user.name, day, title, post, function(err){
+		var url = "/u/" + user.name + "/" + day + "/" + title;
+		if(err){
+			req.flash("error", err);
+			return;
+		}
+		req.flash("success", "修改成功");
+		res.redirect(url);
+	})
+})
+
+router.get("/remove/:name/:day/:title", checkLogin);
+router.get("/remove/:name/:day/:title", function(req, res, next){
+	Post.remove(req.session.user.name, req.params.day, req.params.title, function(err){
+		if(err){
+			req.flash("error", err);
+			return res.redirect("back");
+		}
+		req.flash("success", "删除成功");
+		res.redirect("/");
+	})
+})
 
 module.exports = router;
 

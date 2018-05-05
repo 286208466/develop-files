@@ -1,6 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
 var settings = require("../settings");
 var markdown = require("markdown").markdown;
+var Comment = require("../models/comment");
 
 function Post(name, title, post){
 	this.name = name;
@@ -25,7 +26,8 @@ Post.prototype.save = function(callback){
 		name: this.name,
 		time: time,
 		title: this.title,
-		post: this.post
+		post: this.post,
+		comments: []
 	}
 	MongoClient.connect(settings.dbhost, function(err, client) {
 		if(err){
@@ -44,7 +46,7 @@ Post.prototype.save = function(callback){
 	});
 }
 
-Post.get = function(name, callback){
+Post.getAll = function(name, page, callback){
 	MongoClient.connect(settings.dbhost, function(err, client) {
 		if(err){
 			callback(err);
@@ -59,7 +61,47 @@ Post.get = function(name, callback){
 			if(name){
 				query.name = name;
 			}
-			collection.find(query).sort({time: -1}).toArray(function(err, docs){
+			
+			collection.count(query, function(err, total){
+				collection.find(query, {
+					skip:(page-1)*10,
+					limit: 10
+				}).sort({time: -1}).toArray(function(err, docs){
+					client.close();
+					if(err){
+						return callback(err);
+					}
+					docs.forEach(function(doc){
+						if(doc.post){
+							doc.post = markdown.toHTML(doc.post);
+						}
+					})
+					callback(null, docs, total);
+				})
+			})
+			
+		})
+	});
+}
+
+//获取一篇文章
+Post.getOne = function(name, day, title, callback){
+	MongoClient.connect(settings.dbhost, function(err, client) {
+		if(err){
+			callback(err);
+		}
+		var db = client.db(settings.dbname);
+		db.collection("posts", {strict: true}, function(err, collection){
+			if(err){
+				client.close();
+				return callback(err);
+			}
+			var query = {
+				"name": name,
+				"time.day": day,
+				"title": title
+			};
+			collection.find(query).toArray(function(err, docs){
 				client.close();
 				if(err){
 					return callback(err);
@@ -68,9 +110,102 @@ Post.get = function(name, callback){
 					if(doc.post){
 						doc.post = markdown.toHTML(doc.post);
 					}
+					if(doc.comments){
+						doc.comments.forEach(function(comment){
+							comment.content = markdown.toHTML(comment.content);
+						})
+					}
+					
 				})
-				callback(null, docs);
+				console.log("docs-------", docs)
+				callback(null, docs[0]);
 			})
+			
+		})
+	});
+}
+
+Post.edit = function(name, day, title, callback){
+	MongoClient.connect(settings.dbhost, function(err, client) {
+		if(err){
+			callback(err);
+		}
+		var db = client.db(settings.dbname);
+		db.collection("posts", {strict: true}, function(err, collection){
+			if(err){
+				client.close();
+				return callback(err);
+			}
+			var query = {
+				"name": name,
+				"time.day": day,
+				"title": title
+			};
+			collection.find(query).sort({time: -1}).toArray(function(err, docs){
+				client.close();
+				if(err){
+					return callback(err);
+				}
+				callback(null, docs[0]);
+			})
+			
+		})
+	});
+}
+
+Post.update = function(name, day, title, post, callback){
+	MongoClient.connect(settings.dbhost, function(err, client) {
+		if(err){
+			callback(err);
+		}
+		var db = client.db(settings.dbname);
+		db.collection("posts", {strict: true}, function(err, collection){
+			if(err){
+				client.close();
+				return callback(err);
+			}
+			var query = {
+				"name": name,
+				"time.day": day,
+				"title": title
+			};
+			collection.updateOne(query, {$set: {post: post}}, function(err, result){
+				client.close();
+				if(err){
+					return callback(err);
+				}
+				callback(null);
+			})
+			
+		})
+	});
+}
+
+
+Post.remove = function(name, day, title, callback){
+	MongoClient.connect(settings.dbhost, function(err, client) {
+		if(err){
+			callback(err);
+		}
+		var db = client.db(settings.dbname);
+		db.collection("posts", {strict: true}, function(err, collection){
+			if(err){
+				client.close();
+				return callback(err);
+			}
+			var query = {
+				"name": name,
+				"time.day": day,
+				"title": title
+			};
+			collection.deleteOne(query, function(err, result){
+				client.close();
+				if(err){
+					return callback(err);
+				}
+				callback(null);
+			})
+			
 		})
 	});
 }

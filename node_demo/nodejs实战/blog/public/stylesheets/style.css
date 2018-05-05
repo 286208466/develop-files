@@ -51,3 +51,32 @@ article a:hover {
 .info {
 	font-size: 14px;
 }
+.edit {
+	margin: 3px;
+	padding: 2px 5px;
+	border-radius: 3px;
+	background: #f3f3f3;
+	color: #333;
+	font-size: 12px;
+}
+.edit:hover {
+	text-decoration: none;
+	background: #f00;
+	color: #fff;
+	transition: color 0.2s linear;
+}
+
+.prepage a {
+	float: left;
+	text-decoration: none;
+	padding: .5em 1em;
+	color: #f00;
+	font-weight: bold;
+}
+.nextpage a {
+	float: right;
+	text-decoration: none;
+	padding: .5em 1em;
+	color: #f00;
+	font-weight: bold;
+}
