@@ -34,7 +34,8 @@ footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, a
 body {
 	margin: 0;
 	font-size: 14px;
-    line-height: 1.6;
+    /* 方便量UI效果图距离；坏处：要写比较多的margin、padding */
+    line-height: 1;
     min-width: 1200px;
     overflow-x: hidden;
     /* height: 100%; */

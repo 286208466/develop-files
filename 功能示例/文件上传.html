@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1' />
+<meta name="renderer" content="webkit">
+<meta name="description" content="">
+<meta name="keywords" content="">
+</head>
+<body class="">
+    
+    <form action="upload.php" target="mywin" method="post" enctype="multipart/form-data">
+        <p>文件上传：</p>
+        <input type="file" name="img">
+    </form>
+
+    <div>
+        <img src="" width="100%" id="test">
+
+    </div>
+
+    <iframe frameborder="1" name="mywin" style="display: none"></iframe>
+
+<script src="../src/js/plugins/jquery-1.9.1.min.js"></script>
+$(":file").change(function(){
+    $("form").submit();
+})
+
+/*
+    upload.php
+    返回类型：text/html
+    返回数据：
+    <script>var img=top.document.getElementById("test");img.src="";</script>
+
+*/
+</body>
+</html>
+
