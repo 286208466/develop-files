@@ -3,16 +3,7 @@
 	var Utils = function(){};
 	
 	//根据url参数名称获取参数的值
-    Utils.prototype.getUrlParam = function(name, url){
-        var reg = new RegExp('(^|&|#|\\?)' + name + '=([^&]*)(&|$)', 'i');
-        var r = (url || window.location.search).substr(1).match(reg);
-        if(r != null){
-            return decodeURI(r[2]);
-        }
-        return "";
-    }
-    
-    Utils.prototype.getUrlParamVal = function(name){
+    Utils.prototype.getUrlParam = function(name){
     	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
     	var r = window.location.search.substr(1).match(reg);
     	if (r != null) return decodeURI(r[2]); 
