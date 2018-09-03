@@ -7,7 +7,7 @@
     	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
     	var r = window.location.search.substr(1).match(reg);
     	if (r != null) return decodeURI(r[2]); 
-    	return null;
+    	return "";
     }
     
     //iframe下载文件
@@ -69,18 +69,6 @@
         return null;
     }
     
-    //检测浏览器，如果是ie7、ie6 显示提示升级浏览器信息
-    Utils.prototype.updateIE = function(){
-    	var browser = navigator.appName;
-        if(browser == "Microsoft Internet Explorer"){
-            var b_version = navigator.appVersion;
-            var version = b_version.split(";");
-            var trim_Version = version[1].replace(/[ ]/g,"");
-            if( trim_Version == "MSIE7.0" || trim_Version == "MSIE6.0"){
-                window.location.href = "../../system/ie.html";
-            }
-        }
-    }
     
     //是否是PC端
     Utils.prototype.isPc = function(){  
@@ -261,6 +249,21 @@
 		}, 100);
     }*/
     
+    /*
+     Utils.prototype.warning = function(message){
+    	var warning = $("#warning");
+		var body = $(document.body);
+		if(warning.length > 0){
+			warning.remove();
+		}
+		var html = '<div id="warning"><div><span>'2+ messag M??  </div></div>';
+		body.append(html);
+		setTimeout(function(){
+			body.find("#warning").fadeOut();
+		}, 2500);
+    }
+    */
+    
     //是否是微信客户端
     Utils.prototype.isWx = function(){
     	var ua = navigator.userAgent.toLowerCase(); 
@@ -271,36 +274,272 @@
         }
     }
     
-    //对象OBJECT操作
-    Utils.prototype.extend = function(obj){
-    	var length = arguments.length;
-    	if (length < 2 || obj == null) return obj;
-    	for (var index = 1; index < length; index++) {
-    		var source = arguments[index],
-    		keys = this.allKeys(source),
-    		l = keys.length;
-    		for (var i = 0; i < l; i++) {
-    			var key = keys[i];
-    			//if (!1 || obj[key] === void 0) obj[key] = source[key];
-    			if (!0 || obj[key] === void 0) obj[key] = source[key];
-    		}
+  //uuid
+    Utils.prototype.uuid = function(len, radix){
+    	var CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+    	var chars = CHARS, uuid = [], i;
+        radix = radix || chars.length;
+
+        if (len) {
+            // Compact form
+            for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random() * radix];
+        } else {
+            // rfc4122, version 4 form
+            var r;
+
+            // rfc4122 requires these characters
+            uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
+            uuid[14] = '4';
+
+            // Fill in random data. At i==19 set the high bits of clock sequence
+            // as
+            // per rfc4122, sec. 4.1.5
+            for (i = 0; i < 36; i++) {
+                if (!uuid[i]) {
+                    r = 0 | Math.random() * 16;
+                    uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
+                }
+            }
+        }
+        return uuid.join('');
+    }
+     
+    //打印日志
+    Utils.prototype.log = !!window.console ? window.console.log : function(){}
+
+  //操作localstorage
+    Utils.prototype.setLocalItem = function(key, value){
+    	if(window.localStorage){
+    		localStorage.setItem(key, value);
+    	}else{
+    		this.setCookie(key, value, 7);
     	}
-  	    return obj;
     }
     
-    Utils.prototype.isObject = function(obj){
-    	var type = typeof obj;
-        return type === 'function' || type === 'object' && !!obj;
+    Utils.prototype.getLocalItem = function(key){
+    	var val = "";
+    	if(window.localStorage){
+    		val = localStorage.getItem(key);
+    	}else{
+    		val = this.getCookie(key);
+    	}
+    	return val;
     }
     
-    Utils.prototype.allKeys = function(obj){
-    	if (!this.isObject(obj)) return [];
-        var keys = [];
-        for (var key in obj) keys.push(key);
-        // Ahem, IE < 9.
-        //if (hasEnumBug) collectNonEnumProps(obj, keys);
-        return keys;
+    Utils.prototype.removeLocalItem = function(key){
+    	if(window.localStorage){
+    		localStorage.removeItem(key);
+    	}else{
+    		this.setCookie(key, "", -1);
+    	}
     }
+    
+    Utils.prototype.clearLocal = function(){
+    	if(window.localStorage){
+    		localStorage.clear();
+    	}
+    }
+    
+  //原生绑定事件
+    Utils.prototype.bindEvent = function(el, eventName, fn){
+    	if(window.attachEvent){ 
+    		el.attachEvent("on" + eventName, fn); 
+    	}else{  
+    		el.addEventListener(eventName, fn, false); 
+    	}
+    }
+    
+  //jsonp实现
+	/*
+		utils.jsonp({
+		    url: "http://www.baidu.com",
+		    callback: "callback",   //跟后台协商的接收回调名
+		    data: {},
+		    success: function(data){
+		        alert("jsonp_ok");
+		    },
+		    error: function(){
+		        alert("error");
+		    },
+		    time:10000
+		})
+	*/
+	Utils.prototype.jsonp = function(options){
+		
+		//格式化参数
+        var formatParams = function(data) {
+            var arr = [];
+            for (var name in data) {
+                arr.push(encodeURIComponent(name) + '=' + encodeURIComponent(data[name]));
+            }
+            return arr.join('&');
+        }
+        
+		options = options || {};
+        if (!options.url || !options.callback) {
+            throw new Error("参数不合法");
+        }
+
+        //创建 script 标签并加入到页面中
+        var callbackName = ('jsonp_' + Math.random()).replace(".", "");
+        var oHead = document.getElementsByTagName('head')[0];
+        var params = "";
+        if(options.data){
+            options.data[options.callback] = callbackName;
+            params += formatParams(options.data);
+        }else{
+            params+=options.callback+"="+callbackName;
+        }
+        var scriptEl = document.createElement('script');
+        scriptEl.setAttribute("charset", "utf-8");
+        scriptEl.setAttribute("type", "text/javascript");
+        oHead.appendChild(scriptEl);
+
+        //创建jsonp回调函数
+        window[callbackName] = function (json) {
+            oHead.removeChild(scriptEl);
+            clearTimeout(scriptEl.timer);
+            window[callbackName] = null;
+            options.success && options.success(json);
+        };
+
+        //发送请求
+        scriptEl.src = options.url + '?' + params;
+
+        //超时处理
+        if (options.time) {
+            scriptEl.timer = setTimeout(function () {
+                window[callbackName] = null;
+                oHead.removeChild(scriptEl);
+                options.error && options.error({ message: "超时" });
+            }, options.time);
+        }
+        
+	}
+    
+	//获取textarea光标位置
+    Utils.prototype.getTextareaPosition = function(textarea){
+    	var rangeData = {text: "", start: 0, end: 0 };
+		if(textarea.setSelectionRange){ // W3C	
+			textarea.focus();
+			rangeData.start= textarea.selectionStart;
+			rangeData.end = textarea.selectionEnd;
+			rangeData.text = (rangeData.start != rangeData.end) ? textarea.value.substring(rangeData.start, rangeData.end): "";
+		}else if(document.selection){ // IE
+			textarea.focus();
+			var i,
+				oS = document.selection.createRange(),
+				// Don't: oR = textarea.createTextRange()
+				oR = document.body.createTextRange();
+			oR.moveToElementText(textarea);
+			
+			rangeData.text = oS.text;
+			rangeData.bookmark = oS.getBookmark();
+			
+			// object.moveStart(sUnit [, iCount]) 
+			// Return Value: Integer that returns the number of units moved.
+			for (i = 0; oR.compareEndPoints('StartToStart', oS) < 0 && oS.moveStart("character", -1) !== 0; i ++) {
+				// Why? You can alert(textarea.value.length)
+				if (textarea.value.charAt(i) == '\r' ) {
+					i ++;
+				}
+			}
+			rangeData.start = i;
+			rangeData.end = rangeData.text.length + rangeData.start;
+		}
+		
+		return rangeData;
+    }
+    
+    //设置光标位置
+    Utils.prototype.setTextareaPosition = function(textarea, rangeData){
+    	var oR, start, end;
+		if(!rangeData){
+			alert("You must get cursor position first.")
+		}
+		textarea.focus();
+		if(textarea.setSelectionRange){ // W3C
+			textarea.setSelectionRange(rangeData.start, rangeData.end);
+		}else if(textarea.createTextRange){ // IE
+			oR = textarea.createTextRange();
+			
+			// Fixbug : ues moveToBookmark()
+			// In IE, if cursor position at the end of textarea, the set function don't work
+			if(textarea.value.length === rangeData.start) {
+				//alert('hello')
+				oR.collapse(false);
+				oR.select();
+			} else {
+				oR.moveToBookmark(rangeData.bookmark);
+				oR.select();
+			}
+		}
+    }
+    
+    Utils.prototype.addTextareaText = function(textarea, rangeData, text){
+    	var oValue, nValue, oR, sR, nStart, nEnd, st;
+		this.setTextareaPosition(textarea, rangeData);
+		
+		if (textarea.setSelectionRange) { // W3C
+			oValue = textarea.value;
+			nValue = oValue.substring(0, rangeData.start) + text + oValue.substring(rangeData.end);
+			nStart = nEnd = rangeData.start + text.length;
+			st = textarea.scrollTop;
+			textarea.value = nValue;
+			// Fixbug:
+			// After textarea.values = nValue, scrollTop value to 0
+			if(textarea.scrollTop != st) {
+				textarea.scrollTop = st;
+			}
+			textarea.setSelectionRange(nStart, nEnd);
+		} else if (textarea.createTextRange) { // IE
+			sR = document.selection.createRange();
+			sR.text = text;
+			sR.setEndPoint('StartToEnd', sR);
+			sR.select();
+		}
+    }
+    
+  //播放消息提示声音
+    Utils.prototype.playNoticeAudio = function(){
+    	let audio = document.getElementById("noticeAudio");
+		if(!audio.paused){
+			audio.pause();
+		}
+		audio.play();
+    }
+    
+    /*
+  	字符串转成json
+	字符串:"name=123&telephone=123&email=123&content=123"
+	json: {
+		name: 123,
+		telephone: 123,
+		email: 123,
+		content: 123
+	}
+*/
+Utils.prototype.str2json = function(str){
+	var arr = str.split("&");
+	var obj = {};
+	for(var i = 0; i < arr.length; i++){
+		var key = arr[i].split("=")[0];
+		var val = decodeURIComponent(arr[i].split("=")[1]);
+		if(val != ""){
+			obj[key] = val;
+		}
+	}
+	return obj;
+}
+    
+/*
+向父窗口发送消息
+*/
+Utils.prototype.postMessage = function(obj){
+if(window.parent){
+	window.parent.postMessage(JSON.stringify(obj), "*");
+}
+}   
     
     window.utils = new Utils();
     //module.exports = new Utils();
